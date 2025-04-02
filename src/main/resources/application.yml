@@ -1,6 +1,9 @@
 spring:
   application:
     name: e-store
+  sql:
+    init:
+      mode: always
   datasource:
     url: ${DATASOURCE_URL}
     username: ${DATASOURCE_USERNAME}
