@@ -3,6 +3,8 @@ package e_store.database.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "s_product")
@@ -18,17 +20,31 @@ public class Product {
 
     private BigDecimal price;
 
-    //manytomany TODO
+    @ManyToMany(mappedBy = "productsLst")
+    private List<Order> ordersLst = new ArrayList<>();
 
 
     public Product() {
     }
 
-    public Product(Long id, String name, String description, BigDecimal price) {
+    public Product(Long id,
+                   String name,
+                   String description,
+                   BigDecimal price,
+                   List<Order> ordersLst) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
+        this.ordersLst = ordersLst;
+    }
+
+    public List<Order> getOrdersLst() {
+        return ordersLst;
+    }
+
+    public void setOrdersLst(List<Order> ordersLst) {
+        this.ordersLst = ordersLst;
     }
 
     public Long getId() {

@@ -28,7 +28,11 @@ public class Address {
     public Address() {
     }
 
-    public Address(Long id, String storeName, String city, String streetAddress, List<Order> ordersLst) {
+    public Address(Long id,
+                   String storeName,
+                   String city,
+                   String streetAddress,
+                   List<Order> ordersLst) {
         this.id = id;
         this.storeName = storeName;
         this.city = city;

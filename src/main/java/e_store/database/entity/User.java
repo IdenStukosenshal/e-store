@@ -29,7 +29,11 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, List<Order> ordersLst) {
+    public User(Long id,
+                String firstName,
+                String lastName,
+                String email,
+                List<Order> ordersLst) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

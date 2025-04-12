@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -32,11 +33,16 @@ public class Order {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    //cascade = CascadeType.ALL может быть избыточно
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
-    private List<ProductOrder> productOrderLst;
 
-    //manytomany TODO
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    private List<ProductOrder> productOrderLst = new ArrayList<>();
+
+
+    @ManyToMany
+    @JoinTable(name = "s_product_order",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    private List<Product> productsLst = new ArrayList<>();
 
 
     public Order() {
@@ -48,7 +54,8 @@ public class Order {
                  BigDecimal orderCost,
                  LocalDateTime orderDate,
                  Address address,
-                 List<ProductOrder> productOrderLst) {
+                 List<ProductOrder> productOrderLst,
+                 List<Product> productsLst) {
         this.id = id;
         this.user = user;
         this.status = status;
@@ -56,6 +63,15 @@ public class Order {
         this.orderDate = orderDate;
         this.address = address;
         this.productOrderLst = productOrderLst;
+        this.productsLst = productsLst;
+    }
+
+    public List<Product> getProductsLst() {
+        return productsLst;
+    }
+
+    public void setProductsLst(List<Product> productsLst) {
+        this.productsLst = productsLst;
     }
 
     public Long getId() {

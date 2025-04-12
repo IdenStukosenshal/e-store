@@ -19,11 +19,11 @@ public class ProductOrderPK implements Serializable {
     private Long productId;
 
 
-
     public ProductOrderPK() {
     }
 
-    public ProductOrderPK(Long orderId, Long productId ) {
+    public ProductOrderPK(Long orderId,
+                          Long productId) {
         this.orderId = orderId;
         this.productId = productId;
     }

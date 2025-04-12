@@ -20,15 +20,16 @@ public class ProductOrder {
     @MapsId("productId")
     private Product product;
 
-
     private Long quantity;
-
 
 
     public ProductOrder() {
     }
 
-    public ProductOrder(ProductOrderPK productOrderPK, Order order, Product product, Long quantity) {
+    public ProductOrder(ProductOrderPK productOrderPK,
+                        Order order,
+                        Product product,
+                        Long quantity) {
         this.productOrderPK = productOrderPK;
         this.order = order;
         this.product = product;
