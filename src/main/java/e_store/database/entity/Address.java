@@ -2,6 +2,7 @@ package e_store.database.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,8 +22,13 @@ public class Address {
     @Column(name = "street_address")
     private String streetAddress;
 
-    @OneToMany(mappedBy = "address")
-    private List<Order> ordersLst;
+    @OneToMany(mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.LAZY) //когда есть поле в классе можно использовать (mappedBy = "поле")
+    private List<Order> ordersLst = new ArrayList<>();
+
+    public void addOrder(Order order){
+        this.ordersLst.add(order);
+        order.setAddress(this);
+    }
 
 
     public Address() {

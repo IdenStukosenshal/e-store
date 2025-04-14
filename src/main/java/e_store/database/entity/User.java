@@ -2,6 +2,7 @@ package e_store.database.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,8 +23,15 @@ public class User {
     private String email;
 
 
-    @OneToMany(mappedBy = "user")
-    private List<Order> ordersLst;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Order> ordersLst = new ArrayList<>();
+
+    public void addOrder(Order order){
+        this.ordersLst.add(order);
+        order.setUser(this);
+    }
+
+
 
 
     public User() {

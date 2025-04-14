@@ -43,14 +43,14 @@ CONSTRAINT order_address_fk FOREIGN KEY(address_id)
 
 /*'LVL 3'*/
 /*'many-to-many связь'*/
-CREATE TABLE IF NOT EXISTS s_product_order(
+CREATE TABLE IF NOT EXISTS s_order_product(
 order_id BIGINT NOT NULL,
 product_id BIGINT NOT NULL,
 quantity BIGINT NOT NULL,
 CONSTRAINT product_order_pk PRIMARY KEY(order_id, product_id),
 
-CONSTRAINT product_order_order_fk FOREIGN KEY (order_id)
+CONSTRAINT order_product_order_fk FOREIGN KEY (order_id)
     REFERENCES s_order(order_id) ON UPDATE CASCADE ON DELETE CASCADE,
-CONSTRAINT product_order_product_fk FOREIGN KEY (product_id)
+CONSTRAINT order_product_product_fk FOREIGN KEY (product_id)
     REFERENCES s_product(product_id) ON UPDATE CASCADE
 );

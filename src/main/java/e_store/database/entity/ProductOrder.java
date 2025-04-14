@@ -4,7 +4,7 @@ package e_store.database.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "s_product_order")
+@Table(name = "s_order_product")
 public class ProductOrder {
 
     @EmbeddedId

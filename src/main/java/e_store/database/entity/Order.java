@@ -34,12 +34,12 @@ public class Order {
     private Address address;
 
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductOrder> productOrderLst = new ArrayList<>();
 
 
     @ManyToMany
-    @JoinTable(name = "s_product_order",
+    @JoinTable(name = "s_order_product",
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> productsLst = new ArrayList<>();
