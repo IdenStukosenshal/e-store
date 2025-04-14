@@ -38,13 +38,6 @@ public class Order {
     private List<ProductOrder> productOrderLst = new ArrayList<>();
 
 
-    @ManyToMany
-    @JoinTable(name = "s_order_product",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private List<Product> productsLst = new ArrayList<>();
-
-
     public Order() {
     }
 
@@ -54,8 +47,7 @@ public class Order {
                  BigDecimal orderCost,
                  LocalDateTime orderDate,
                  Address address,
-                 List<ProductOrder> productOrderLst,
-                 List<Product> productsLst) {
+                 List<ProductOrder> productOrderLst) {
         this.id = id;
         this.user = user;
         this.status = status;
@@ -63,15 +55,6 @@ public class Order {
         this.orderDate = orderDate;
         this.address = address;
         this.productOrderLst = productOrderLst;
-        this.productsLst = productsLst;
-    }
-
-    public List<Product> getProductsLst() {
-        return productsLst;
-    }
-
-    public void setProductsLst(List<Product> productsLst) {
-        this.productsLst = productsLst;
     }
 
     public Long getId() {

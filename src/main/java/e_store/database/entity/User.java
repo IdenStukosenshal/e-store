@@ -23,7 +23,7 @@ public class User {
     private String email;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Order> ordersLst = new ArrayList<>();
 
     public void addOrder(Order order){

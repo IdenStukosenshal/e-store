@@ -7,57 +7,61 @@ import jakarta.persistence.*;
 @Table(name = "s_order_product")
 public class ProductOrder {
 
-    @EmbeddedId
-    private ProductOrderPK productOrderPK;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_product_id")
+    private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "order_id")
-    @MapsId("orderId")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "product_id")
-    @MapsId("productId")
     private Product product;
 
     private Long quantity;
 
 
+    public void setOrder(Order order) {
+        this.order = order;
+        this.order.getProductOrderLst().add(this);
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+        this.product.getProductOrderLst().add(this);
+    }
+
+
     public ProductOrder() {
     }
 
-    public ProductOrder(ProductOrderPK productOrderPK,
+    public ProductOrder(Long id,
                         Order order,
                         Product product,
                         Long quantity) {
-        this.productOrderPK = productOrderPK;
+        this.id = id;
         this.order = order;
         this.product = product;
         this.quantity = quantity;
     }
 
-    public ProductOrderPK getProductOrderPK() {
-        return productOrderPK;
+    public Long getId() {
+        return id;
     }
 
-    public void setProductOrderPK(ProductOrderPK productOrderPK) {
-        this.productOrderPK = productOrderPK;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Order getOrder() {
         return order;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
-    }
 
     public Product getProduct() {
         return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
     public Long getQuantity() {

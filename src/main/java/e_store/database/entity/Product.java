@@ -20,12 +20,9 @@ public class Product {
 
     private BigDecimal price;
 
-    @ManyToMany(mappedBy = "productsLst")
-    private List<Order> ordersLst = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductOrder> productOrderLst = new ArrayList<>();
-
 
 
     public Product() {
@@ -35,13 +32,11 @@ public class Product {
                    String name,
                    String description,
                    BigDecimal price,
-                   List<Order> ordersLst,
                    List<ProductOrder> productOrderLst) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.ordersLst = ordersLst;
         this.productOrderLst = productOrderLst;
     }
 
@@ -53,13 +48,6 @@ public class Product {
         this.productOrderLst = productOrderLst;
     }
 
-    public List<Order> getOrdersLst() {
-        return ordersLst;
-    }
-
-    public void setOrdersLst(List<Order> ordersLst) {
-        this.ordersLst = ordersLst;
-    }
 
     public Long getId() {
         return id;
