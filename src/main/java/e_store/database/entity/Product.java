@@ -23,7 +23,7 @@ public class Product {
 
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProductOrder> productOrderLst = new ArrayList<>();
+    private List<OrderProduct> orderProductLst = new ArrayList<>();
 
 
     public Product() {
@@ -33,20 +33,20 @@ public class Product {
                    String name,
                    String description,
                    BigDecimal price,
-                   List<ProductOrder> productOrderLst) {
+                   List<OrderProduct> orderProductLst) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.productOrderLst = productOrderLst;
+        this.orderProductLst = orderProductLst;
     }
 
-    public List<ProductOrder> getProductOrderLst() {
-        return productOrderLst;
+    public List<OrderProduct> getProductOrderLst() {
+        return orderProductLst;
     }
 
-    public void setProductOrderLst(List<ProductOrder> productOrderLst) {
-        this.productOrderLst = productOrderLst;
+    public void setProductOrderLst(List<OrderProduct> orderProductLst) {
+        this.orderProductLst = orderProductLst;
     }
 
 

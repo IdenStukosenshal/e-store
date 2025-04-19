@@ -3,9 +3,11 @@ package e_store.database.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "s_order_product")
-public class ProductOrder {
+public class OrderProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +27,7 @@ public class ProductOrder {
 
     public void setOrder(Order order) {
         this.order = order;
-        this.order.getProductOrderLst().add(this);
+        this.order.getOrderProductLst().add(this);
     }
 
     public void setProduct(Product product) {
@@ -34,10 +36,10 @@ public class ProductOrder {
     }
 
 
-    public ProductOrder() {
+    public OrderProduct() {
     }
 
-    public ProductOrder(Long id,
+    public OrderProduct(Long id,
                         Order order,
                         Product product,
                         Long quantity) {
@@ -70,5 +72,17 @@ public class ProductOrder {
 
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderProduct that = (OrderProduct) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getOrder(), that.getOrder()) && Objects.equals(getProduct(), that.getProduct()) && Objects.equals(getQuantity(), that.getQuantity());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getOrder(), getProduct(), getQuantity());
     }
 }

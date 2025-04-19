@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "s_order")
@@ -35,7 +36,7 @@ public class Order {
 
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProductOrder> productOrderLst = new ArrayList<>();
+    private List<OrderProduct> orderProductLst = new ArrayList<>();
 
 
     public Order() {
@@ -47,14 +48,14 @@ public class Order {
                  BigDecimal orderCost,
                  LocalDateTime orderDate,
                  Address address,
-                 List<ProductOrder> productOrderLst) {
+                 List<OrderProduct> orderProductLst) {
         this.id = id;
         this.user = user;
         this.status = status;
         this.orderCost = orderCost;
         this.orderDate = orderDate;
         this.address = address;
-        this.productOrderLst = productOrderLst;
+        this.orderProductLst = orderProductLst;
     }
 
     public Long getId() {
@@ -105,11 +106,23 @@ public class Order {
         this.address = address;
     }
 
-    public List<ProductOrder> getProductOrderLst() {
-        return productOrderLst;
+    public List<OrderProduct> getOrderProductLst() {
+        return orderProductLst;
     }
 
-    public void setProductOrderLst(List<ProductOrder> productOrderLst) {
-        this.productOrderLst = productOrderLst;
+    public void setOrderProductLst(List<OrderProduct> orderProductLst) {
+        this.orderProductLst = orderProductLst;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(getId(), order.getId()) && Objects.equals(getUser(), order.getUser()) && getStatus() == order.getStatus() && Objects.equals(getOrderCost(), order.getOrderCost()) && Objects.equals(getOrderDate(), order.getOrderDate()) && Objects.equals(getAddress(), order.getAddress());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getUser(), getStatus(), getOrderCost(), getOrderDate(), getAddress());
     }
 }
