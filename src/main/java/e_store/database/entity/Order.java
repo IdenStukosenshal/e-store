@@ -2,6 +2,7 @@ package e_store.database.entity;
 
 import e_store.enums.OrderStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,27 +15,29 @@ import java.util.Objects;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @NotNull
     private User user;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @Column(name = "order_cost")
+    @NotNull
     private BigDecimal orderCost;
 
-    @Column(name = "order_date")
+    @NotNull
     private LocalDateTime orderDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
+    @NotNull
     private Address address;
 
-
+    @NotNull
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderProduct> orderProductLst = new ArrayList<>();
 

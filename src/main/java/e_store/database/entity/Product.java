@@ -1,6 +1,7 @@
 package e_store.database.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -12,18 +13,16 @@ import java.util.Objects;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
     private Long id;
 
+    @NotNull
     private String name;
 
+    @NotNull
     private String description;
 
+    @NotNull
     private BigDecimal price;
-
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<OrderProduct> orderProductLst = new ArrayList<>();
 
 
     public Product() {
@@ -38,17 +37,7 @@ public class Product {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.orderProductLst = orderProductLst;
     }
-
-    public List<OrderProduct> getProductOrderLst() {
-        return orderProductLst;
-    }
-
-    public void setProductOrderLst(List<OrderProduct> orderProductLst) {
-        this.orderProductLst = orderProductLst;
-    }
-
 
     public Long getId() {
         return id;

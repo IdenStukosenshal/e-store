@@ -8,6 +8,6 @@ import java.util.Optional;
 
 public interface ProductRepo extends JpaRepository<Product, Long> {
 
-    @Query("SELECT p FROM Product p WHERE p.name = ?1")
+    @Query("SELECT p FROM Product p WHERE p.name = :name")
     public Optional<Product> findByName(String name);
 }

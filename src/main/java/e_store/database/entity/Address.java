@@ -1,6 +1,7 @@
 package e_store.database.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +12,16 @@ public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "address_id")
     private Long id;
 
-    @Column(name = "store_name")
+    //@Column(name = "store_name")
+    @NotNull
     private String storeName;
 
+    @NotNull
     private String city;
 
-    @Column(name = "street_address")
+    @NotNull
     private String streetAddress;
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL, fetch = FetchType.LAZY) //когда есть поле в классе можно использовать (mappedBy = "поле")

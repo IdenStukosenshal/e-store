@@ -2,6 +2,7 @@ package e_store.database.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Objects;
 
@@ -11,17 +12,19 @@ public class OrderProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_product_id")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @NotNull
     private Order order;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @NotNull
     private Product product;
 
+    @NotNull
     private Long quantity;
 
 
@@ -32,7 +35,6 @@ public class OrderProduct {
 
     public void setProduct(Product product) {
         this.product = product;
-        this.product.getProductOrderLst().add(this);
     }
 
 

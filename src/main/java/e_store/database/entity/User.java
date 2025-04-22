@@ -1,6 +1,7 @@
 package e_store.database.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,19 +13,19 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "first_name")
+    @NotNull
     private String firstName;
 
-    @Column(name = "last_name")
+    @NotNull
     private String lastName;
 
+    @NotNull
     private String email;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Order> ordersLst = new ArrayList<>();
 
     public void addOrder(Order order){
