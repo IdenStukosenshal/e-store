@@ -3,8 +3,13 @@ package e_store.database.entity;
 import e_store.enums.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +17,15 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "s_order")
+@EntityListeners({AuditingEntityListener.class})
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="order_id")
     private Long id;
+
+    @NotNull
+    private String orderNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -29,8 +39,15 @@ public class Order {
     @NotNull
     private BigDecimal orderCost;
 
+    @CreatedDate
     @NotNull
-    private LocalDateTime orderDate;
+    private Instant createdAt;
+
+    @LastModifiedDate
+    private Instant updatedAt;
+
+    @NotNull
+    private LocalDateTime deliveryDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
@@ -39,6 +56,7 @@ public class Order {
 
     @NotNull
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    //@Size(min = 1) //message = "..."
     private List<OrderProduct> orderProductLst = new ArrayList<>();
 
 
@@ -46,19 +64,35 @@ public class Order {
     }
 
     public Order(Long id,
+                 String orderNumber,
                  User user,
                  OrderStatus status,
                  BigDecimal orderCost,
-                 LocalDateTime orderDate,
+                 Instant createdAt,
+                 Instant updatedAt,
+                 LocalDateTime deliveryDate,
                  Address address,
                  List<OrderProduct> orderProductLst) {
         this.id = id;
+        this.orderNumber = orderNumber;
         this.user = user;
         this.status = status;
         this.orderCost = orderCost;
-        this.orderDate = orderDate;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deliveryDate = deliveryDate;
         this.address = address;
         this.orderProductLst = orderProductLst;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+        this.user.getOrdersLst().add(this);
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+        this.address.getOrdersLst().add(this);
     }
 
     public Long getId() {
@@ -73,9 +107,7 @@ public class Order {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+
 
     public OrderStatus getStatus() {
         return status;
@@ -93,21 +125,12 @@ public class Order {
         this.orderCost = orderCost;
     }
 
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
-    }
 
     public Address getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
-    }
+
 
     public List<OrderProduct> getOrderProductLst() {
         return orderProductLst;
@@ -117,15 +140,62 @@ public class Order {
         this.orderProductLst = orderProductLst;
     }
 
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(LocalDateTime deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(getId(), order.getId()) && Objects.equals(getUser(), order.getUser()) && getStatus() == order.getStatus() && Objects.equals(getOrderCost(), order.getOrderCost()) && Objects.equals(getOrderDate(), order.getOrderDate()) && Objects.equals(getAddress(), order.getAddress());
+        return Objects.equals(getId(), order.getId()) && Objects.equals(getOrderNumber(), order.getOrderNumber()) && Objects.equals(getUser(), order.getUser()) && getStatus() == order.getStatus() && Objects.equals(getOrderCost(), order.getOrderCost()) && Objects.equals(getCreatedAt(), order.getCreatedAt()) && Objects.equals(getAddress(), order.getAddress());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getUser(), getStatus(), getOrderCost(), getOrderDate(), getAddress());
+        return Objects.hash(getId(), getOrderNumber(), getUser(), getStatus(), getOrderCost(), getCreatedAt(), getAddress());
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderNumber='" + orderNumber + '\'' +
+                ", user=" + user +
+                ", status=" + status +
+                ", orderCost=" + orderCost +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", deliveryDate=" + deliveryDate +
+                ", address=" + address +
+                '}';
     }
 }

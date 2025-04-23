@@ -1,6 +1,7 @@
 package e_store.database.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
@@ -13,27 +14,28 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name ="user_id")
     private Long id;
 
-    @NotNull
+    @NotBlank
     private String firstName;
 
-    @NotNull
+    @NotBlank
     private String lastName;
 
-    @NotNull
+    @NotBlank
     private String email;
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<Order> ordersLst = new ArrayList<>();
 
+    /*
     public void addOrder(Order order){
         this.ordersLst.add(order);
         order.setUser(this);
     }
-
-
+     */
 
 
     public User() {
@@ -102,5 +104,15 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getFirstName(), getLastName(), getEmail());
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

@@ -1,6 +1,5 @@
 package e_store.integration_tests.database.entity;
 
-import static org.junit.jupiter.api.Assertions.*;
 import e_store.database.entity.*;
 import e_store.enums.OrderStatus;
 import e_store.repositories.*;
@@ -11,9 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
 @SpringBootTest
@@ -37,7 +36,7 @@ public class CommonTestOne {
     }
 
     @Test
-    public void simpleCheck(){
+    public void simpleCheck() {
         //Arrange
         User userOne = new User();
         userOne.setFirstName("FirstName_1");
@@ -46,8 +45,8 @@ public class CommonTestOne {
         userRepo.save(userOne);
 
         Address address = new Address();
-        address.setStoreName("StoreName_1");
         address.setCity("CityName_1");
+        address.setPostalCode("post-123");
         address.setStreetAddress("StreetAddress_1");
         addressRepo.save(address);
 
@@ -66,9 +65,9 @@ public class CommonTestOne {
 
         Order orderOne = new Order();
         orderOne.setUser(userOne);
+        orderOne.setOrderNumber("4521734");
         orderOne.setStatus(OrderStatus.NEW);
         orderOne.setOrderCost(productsLst.stream().map(Product::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add));
-        orderOne.setOrderDate(LocalDateTime.of(2025, Month.APRIL, 19, 0, 0, 0));
         orderOne.setAddress(address);
 
         OrderProduct orderProductOne = new OrderProduct();
