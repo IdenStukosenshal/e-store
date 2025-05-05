@@ -10,6 +10,7 @@ public record OrderCreateUpdateDto(
         Long userId,
         @NotNull
         Long addressId,
+        @NotNull
         @Size(min = 1, max = 1000)
         List<OrderProductCreateUpdateDto> orderProductDtoLst
 ) {

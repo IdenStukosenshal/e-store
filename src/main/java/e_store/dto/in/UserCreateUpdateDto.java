@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 public record UserCreateUpdateDto(
         @NotBlank
         String firstName,
-        @NotBlank
         String lastName,
         @Email
+        @NotBlank
         String email
 ) {
 }

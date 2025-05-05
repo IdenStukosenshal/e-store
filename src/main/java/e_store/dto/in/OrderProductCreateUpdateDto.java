@@ -7,6 +7,7 @@ public record OrderProductCreateUpdateDto(
         @NotNull
         Long productId,
         @Min(1)
+        @NotNull
         Long quantity
 ) {
 }

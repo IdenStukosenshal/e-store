@@ -12,6 +12,7 @@ public record ProductCreateUpdateDto(
         @NotBlank
         String description,
         @Min(0)
+        @NotNull
         BigDecimal price
 ) {
 
