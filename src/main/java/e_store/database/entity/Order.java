@@ -3,7 +3,6 @@ package e_store.database.entity;
 import e_store.enums.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,7 +20,7 @@ import java.util.Objects;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="order_id")
+    @Column(name = "order_id")
     private Long id;
 
     @NotNull
@@ -56,8 +55,19 @@ public class Order {
 
     @NotNull
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    //@Size(min = 1) //message = "..."
     private List<OrderProduct> orderProductLst = new ArrayList<>();
+
+    public void addProduct(Product product, Integer quantity) {
+        OrderProduct orderProduct = new OrderProduct();
+        orderProduct.setProduct(product);
+        orderProduct.setQuantity(quantity);
+        this.orderProductLst.add(orderProduct);
+        orderProduct.setOrder(this);
+    }
+
+    public void removeProduct() {//TODO неплохо было бы реализовать
+
+    }
 
 
     public Order() {
@@ -107,8 +117,6 @@ public class Order {
         return user;
     }
 
-
-
     public OrderStatus getStatus() {
         return status;
     }
@@ -125,12 +133,9 @@ public class Order {
         this.orderCost = orderCost;
     }
 
-
     public Address getAddress() {
         return address;
     }
-
-
 
     public List<OrderProduct> getOrderProductLst() {
         return orderProductLst;
@@ -176,12 +181,12 @@ public class Order {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Order order = (Order) o;
-        return Objects.equals(getId(), order.getId()) && Objects.equals(getOrderNumber(), order.getOrderNumber()) && Objects.equals(getUser(), order.getUser()) && getStatus() == order.getStatus() && Objects.equals(getOrderCost(), order.getOrderCost()) && Objects.equals(getCreatedAt(), order.getCreatedAt()) && Objects.equals(getAddress(), order.getAddress());
+        return Objects.equals(getId(), order.getId()) && Objects.equals(getOrderNumber(), order.getOrderNumber()) && Objects.equals(getUser(), order.getUser()) && Objects.equals(getOrderCost(), order.getOrderCost()) && Objects.equals(getCreatedAt(), order.getCreatedAt()) && Objects.equals(getAddress(), order.getAddress());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getOrderNumber(), getUser(), getStatus(), getOrderCost(), getCreatedAt(), getAddress());
+        return Objects.hash(getId(), getOrderNumber(), getUser(), getOrderCost(), getCreatedAt(), getAddress());
     }
 
     @Override

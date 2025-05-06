@@ -74,6 +74,7 @@ class UserTest {
         orderOne.setStatus(OrderStatus.NEW);
         orderOne.setOrderCost(BigDecimal.valueOf(100));
         orderOne.setAddress(address);
+        orderOne.addProduct(productOne, 10);
 
         Order orderTwo = new Order();
         orderTwo.setUser(userOne);
@@ -81,16 +82,7 @@ class UserTest {
         orderTwo.setStatus(OrderStatus.NEW);
         orderTwo.setOrderCost(BigDecimal.valueOf(200));
         orderTwo.setAddress(address);
-
-        OrderProduct orderProductOne = new OrderProduct();
-        orderProductOne.setOrder(orderOne);
-        orderProductOne.setProduct(productOne);
-        orderProductOne.setQuantity(10L);
-
-        OrderProduct orderProductTwo = new OrderProduct();
-        orderProductTwo.setOrder(orderTwo);
-        orderProductTwo.setProduct(productTwo);
-        orderProductTwo.setQuantity(20L);
+        orderTwo.addProduct(productTwo, 20);
 
         orderRepo.save(orderOne);
         orderRepo.save(orderTwo);
@@ -99,13 +91,10 @@ class UserTest {
         userRepo.delete(userOne);
 
         //Assert
-
         assertFalse(userRepo.existsById(savedUser.getId()));
         assertTrue(orderProductRepo.findAllByUserId(savedUser.getId()).isEmpty());
         assertTrue(orderRepo.findAll().isEmpty());
         assertFalse(addressRepo.findAll().isEmpty());
         assertFalse(productRepo.findAll().isEmpty());
-
-
     }
 }

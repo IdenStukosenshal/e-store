@@ -25,13 +25,8 @@ public class OrderProduct {
     private Product product;
 
     @NotNull
-    private Long quantity;
+    private Integer quantity;
 
-
-    public void setOrder(Order order) {
-        this.order = order;
-        this.order.getOrderProductLst().add(this);
-    }
 
     public void setProduct(Product product) {
         this.product = product;
@@ -44,7 +39,7 @@ public class OrderProduct {
     public OrderProduct(Long id,
                         Order order,
                         Product product,
-                        Long quantity) {
+                        Integer quantity) {
         this.id = id;
         this.order = order;
         this.product = product;
@@ -63,16 +58,19 @@ public class OrderProduct {
         return order;
     }
 
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 
     public Product getProduct() {
         return product;
     }
 
-    public Long getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Long quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
@@ -85,7 +83,7 @@ public class OrderProduct {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getOrder(), getProduct(), getQuantity());
+        return Objects.hash(getId(), getProduct(), getQuantity());
     }
 
     @Override

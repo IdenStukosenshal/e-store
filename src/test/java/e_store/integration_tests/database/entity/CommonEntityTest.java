@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @SpringBootTest
 @ActiveProfiles("test")
-public class CommonTestOne {
+public class CommonEntityTest {
 
     private final AddressRepo addressRepo;
     private final OrderRepo orderRepo;
@@ -25,10 +25,10 @@ public class CommonTestOne {
     private final UserRepo userRepo;
 
     @Autowired
-    public CommonTestOne(AddressRepo addressRepo,
-                         OrderRepo orderRepo,
-                         ProductRepo productRepo,
-                         UserRepo userRepo) {
+    public CommonEntityTest(AddressRepo addressRepo,
+                            OrderRepo orderRepo,
+                            ProductRepo productRepo,
+                            UserRepo userRepo) {
         this.addressRepo = addressRepo;
         this.orderRepo = orderRepo;
         this.productRepo = productRepo;
@@ -70,15 +70,9 @@ public class CommonTestOne {
         orderOne.setOrderCost(productsLst.stream().map(Product::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add));
         orderOne.setAddress(address);
 
-        OrderProduct orderProductOne = new OrderProduct();
-        orderProductOne.setOrder(orderOne);
-        orderProductOne.setProduct(productOne);
-        orderProductOne.setQuantity(10L);
+        orderOne.addProduct(productOne, 10);
+        orderOne.addProduct(productTwo, 20);
 
-        OrderProduct orderProductTwo = new OrderProduct();
-        orderProductTwo.setOrder(orderOne);
-        orderProductTwo.setProduct(productTwo);
-        orderProductTwo.setQuantity(20L);
 
         //Act
         Order savedOrder = orderRepo.save(orderOne);

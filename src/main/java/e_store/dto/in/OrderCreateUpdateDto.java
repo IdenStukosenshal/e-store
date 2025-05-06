@@ -3,15 +3,16 @@ package e_store.dto.in;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.util.List;
+import java.util.Map;
 
 public record OrderCreateUpdateDto(
         @NotNull
         Long userId,
         @NotNull
         Long addressId,
+
         @NotNull
-        @Size(min = 1, max = 1000)
-        List<OrderProductCreateUpdateDto> orderProductDtoLst
+        @Size(min = 1, max = 1000, message = "min 1")
+        Map<Long, Integer> productQuantityIdMap
 ) {
 }

@@ -6,6 +6,6 @@ import e_store.database.entity.Product;
 public record OrderProductReadDto(
         Long id,
         ProductReadDto productDto,
-        Long quantity
+        Integer quantity
 ) {
 }
