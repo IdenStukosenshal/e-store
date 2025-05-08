@@ -45,7 +45,6 @@ public class Order {
     @LastModifiedDate
     private Instant updatedAt;
 
-    @NotNull
     private LocalDateTime deliveryDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
