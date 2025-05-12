@@ -7,6 +7,8 @@ import e_store.mappers.in.UserCreateUpdateMapper;
 import e_store.mappers.out.UserReadMapper;
 import e_store.repositories.UserRepo;
 import jakarta.validation.ValidationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +31,8 @@ public class UserService {
     @Transactional(readOnly = true)
     public Page<UserReadDto> findAll(PageRequest pageRequest) {
         return userRepo
-                .findAll()
-                .stream()
-                .map(userReadMapper::map)
-                .toList();
+                .findAll(pageRequest)
+                .map(userReadMapper::map);
     }
 
     @Transactional(readOnly = true)

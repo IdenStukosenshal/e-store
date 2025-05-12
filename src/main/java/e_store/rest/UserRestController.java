@@ -1,12 +1,13 @@
 package e_store.rest;
 
 import e_store.dto.in.UserCreateUpdateDto;
+import e_store.dto.out.PageResponseDto;
 import e_store.dto.out.UserReadDto;
 import e_store.services.UserService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,8 +20,12 @@ public class UserRestController {
     }
 
     @GetMapping
-    public List<UserReadDto> findAll() {
-        return userService.findAll();
+    public PageResponseDto<UserReadDto> findAll(
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "5") int size
+    ) {
+        Page<UserReadDto> pagedData = userService.findAll(PageRequest.of(page, size));
+        return PageResponseDto.of(pagedData);
     }
 
     @GetMapping("/{id}")

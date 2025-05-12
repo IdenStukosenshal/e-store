@@ -6,6 +6,8 @@ import e_store.mappers.in.OrderCreateUpdateMapper;
 import e_store.mappers.out.OrderReadMapper;
 import e_store.repositories.OrderRepo;
 import jakarta.validation.ValidationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +30,8 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Page<OrderReadDto> findAll(PageRequest pageRequest) {
         return orderRepo
-                .findAll()
-                .stream()
-                .map(orderReadMapper::map)
-                .toList();
+                .findAll(pageRequest)
+                .map(orderReadMapper::map);
     }
 
     @Transactional(readOnly = true)

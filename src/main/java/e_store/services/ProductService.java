@@ -7,6 +7,8 @@ import e_store.mappers.in.ProductCreateUpdateMapper;
 import e_store.mappers.out.ProductReadMapper;
 import e_store.repositories.ProductRepo;
 import jakarta.validation.ValidationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,10 +31,8 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Page<ProductReadDto> findAll(PageRequest pageRequest) {
         return productRepo
-                .findAll()
-                .stream()
-                .map(productReadMapper::map)
-                .toList();
+                .findAll(pageRequest)
+                .map(productReadMapper::map);
     }
 
     @Transactional(readOnly = true)
