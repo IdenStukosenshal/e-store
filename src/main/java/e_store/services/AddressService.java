@@ -7,9 +7,11 @@ import e_store.mappers.out.AddressReadMapper;
 import e_store.repositories.AddressRepo;
 import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @Service
 public class AddressService {
 
@@ -25,6 +27,7 @@ public class AddressService {
         this.addressRepo = addressRepo;
     }
 
+    @Transactional(readOnly = true)
     public List<AddressReadDto> findAll() {
         return addressRepo
                 .findAll()
@@ -33,6 +36,7 @@ public class AddressService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public AddressReadDto findById(Long id) {
         var entity = addressRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
         return addressReadMapper.map(entity);
@@ -47,14 +51,14 @@ public class AddressService {
     public AddressReadDto update(Long id, AddressCreateUpdateDto updateDto) {
         var entity = addressRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
         var updatedEntity = addressCreateUpdateMapper.mapUpd(updateDto, entity);
-        var savedEntity = addressRepo.save(updatedEntity); //saveAndFlush()
-        //flush????
+        var savedEntity = addressRepo.saveAndFlush(updatedEntity);
         return addressReadMapper.map(savedEntity);
     }
 
     public void deleteById(Long id) {
         if (addressRepo.existsById(id)) {
             addressRepo.deleteById(id);
+            addressRepo.flush();
         } else {
             throw new ValidationException("not found, TEXT!1!!");
         }

@@ -7,9 +7,9 @@ import e_store.mappers.out.OrderReadMapper;
 import e_store.repositories.OrderRepo;
 import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
+@Transactional
 @Service
 public class OrderService {
 
@@ -25,7 +25,8 @@ public class OrderService {
         this.orderCreateUpdateMapper = orderCreateUpdateMapper;
     }
 
-    public List<OrderReadDto> findAll() {
+    @Transactional(readOnly = true)
+    public Page<OrderReadDto> findAll(PageRequest pageRequest) {
         return orderRepo
                 .findAll()
                 .stream()
@@ -33,6 +34,7 @@ public class OrderService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public OrderReadDto findById(Long id) {
         var entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
         return orderReadMapper.map(entity);
@@ -47,13 +49,14 @@ public class OrderService {
     public OrderReadDto update(Long id, OrderCreateUpdateDto updateDto) {
         var entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
         var updatedEntity = orderCreateUpdateMapper.mapUpd(updateDto, entity);
-        var savedEntity = orderRepo.save(updatedEntity); //saveAndFlush()
+        var savedEntity = orderRepo.saveAndFlush(updatedEntity);
         return orderReadMapper.map(savedEntity);
     }
 
     public void deleteById(Long id) {
         if (orderRepo.existsById(id)) {
             orderRepo.deleteById(id);
+            orderRepo.flush();
         } else {
             throw new ValidationException("not found, TEXT!1!!");
         }

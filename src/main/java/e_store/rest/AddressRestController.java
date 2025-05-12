@@ -46,9 +46,9 @@ public class AddressRestController {
         addressService.deleteById(id);
     }
 
+    /*
     @DeleteMapping
-    public void deleteAll() {
-        addressService.deleteAll();
-    }
+    public void deleteAll() {addressService.deleteAll();}
+     */
 
 }

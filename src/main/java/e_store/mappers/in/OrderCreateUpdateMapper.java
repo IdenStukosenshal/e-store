@@ -44,6 +44,7 @@ public class OrderCreateUpdateMapper implements MapperIntrf<OrderCreateUpdateDto
     public Order map(OrderCreateUpdateDto dto) {
         Order entity = new Order();
         copy(dto, entity);
+        entity.setOrderNumber(generateOrderNumberService.generate(entity));
         return entity;
     }
 
@@ -64,7 +65,6 @@ public class OrderCreateUpdateMapper implements MapperIntrf<OrderCreateUpdateDto
             entity.addProduct(pr, productsMap.get(pr.getId()));
         }
         entity.setOrderCost(orderCostCalculationService.calculate(entity.getOrderProductLst()));
-        entity.setOrderNumber(generateOrderNumberService.generate(entity));
     }
 
 

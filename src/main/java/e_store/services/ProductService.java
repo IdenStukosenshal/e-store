@@ -8,9 +8,9 @@ import e_store.mappers.out.ProductReadMapper;
 import e_store.repositories.ProductRepo;
 import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
+@Transactional
 @Service
 public class ProductService {
 
@@ -26,7 +26,8 @@ public class ProductService {
         this.productRepo = productRepo;
     }
 
-    public List<ProductReadDto> findAll() {
+    @Transactional(readOnly = true)
+    public Page<ProductReadDto> findAll(PageRequest pageRequest) {
         return productRepo
                 .findAll()
                 .stream()
@@ -34,6 +35,7 @@ public class ProductService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public ProductReadDto findById(Long id) {
         var entity = productRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
         return productReadMapper.map(entity);
@@ -48,13 +50,14 @@ public class ProductService {
     public ProductReadDto update(Long id, ProductCreateUpdateDto updateDto) {
         var entity = productRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
         var updatedEntity = productCreateUpdateMapper.mapUpd(updateDto, entity);
-        var savedEntity = productRepo.save(updatedEntity); //saveAndFlush()
+        var savedEntity = productRepo.saveAndFlush(updatedEntity);
         return productReadMapper.map(savedEntity);
     }
 
     public void deleteById(Long id) {
         if (productRepo.existsById(id)) {
             productRepo.deleteById(id);
+            productRepo.flush();
         } else {
             throw new ValidationException("not found, TEXT!1!!");
         }
