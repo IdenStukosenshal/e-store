@@ -1,4 +1,4 @@
-package e_store.mappers.in;
+package e_store.services;
 
 import e_store.database.entity.Address;
 import e_store.database.entity.Order;
@@ -6,21 +6,18 @@ import e_store.database.entity.Product;
 import e_store.database.entity.User;
 import e_store.dto.in.OrderCreateUpdateDto;
 import e_store.enums.OrderStatus;
-import e_store.mappers.MapperIntrf;
 import e_store.repositories.AddressRepo;
 import e_store.repositories.ProductRepo;
 import e_store.repositories.UserRepo;
-import e_store.services.GenerateOrderNumberService;
-import e_store.services.OrderCostCalculationService;
 import jakarta.validation.ValidationException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Component
-public class OrderCreateUpdateMapper implements MapperIntrf<OrderCreateUpdateDto, Order> {
+@Service
+public class CreateUpdateOrderService {
 
     private final UserRepo userRepo;
     private final AddressRepo addressRepo;
@@ -28,11 +25,11 @@ public class OrderCreateUpdateMapper implements MapperIntrf<OrderCreateUpdateDto
     private final OrderCostCalculationService orderCostCalculationService;
     private final GenerateOrderNumberService generateOrderNumberService;
 
-    public OrderCreateUpdateMapper(UserRepo userRepo,
-                                   AddressRepo addressRepo,
-                                   ProductRepo productRepo,
-                                   OrderCostCalculationService orderCostCalculationService,
-                                   GenerateOrderNumberService generateOrderNumberService) {
+    public CreateUpdateOrderService(UserRepo userRepo,
+                                    AddressRepo addressRepo,
+                                    ProductRepo productRepo,
+                                    OrderCostCalculationService orderCostCalculationService,
+                                    GenerateOrderNumberService generateOrderNumberService) {
         this.userRepo = userRepo;
         this.addressRepo = addressRepo;
         this.productRepo = productRepo;
@@ -40,25 +37,27 @@ public class OrderCreateUpdateMapper implements MapperIntrf<OrderCreateUpdateDto
         this.generateOrderNumberService = generateOrderNumberService;
     }
 
-    @Override
-    public Order map(OrderCreateUpdateDto dto) {
-        Order entity = new Order();
-        copy(dto, entity);
-        entity.setOrderNumber(generateOrderNumberService.generate(entity));
-        return entity;
+    public Order create(OrderCreateUpdateDto dto) {
+        Order order = new Order();
+        order.setStatus(OrderStatus.NEW);
+
+        copyFields(dto, order);
+
+        order.setOrderNumber(generateOrderNumberService.generate(order));
+        return order;
     }
 
-    @Override
-    public Order mapUpd(OrderCreateUpdateDto dto, Order entity) {
-        copy(dto, entity);
-        return entity;
+    public Order update(OrderCreateUpdateDto dto, Order order) {
+        order.setStatus(OrderStatus.NEW); //TODO ???
+
+        copyFields(dto, order);
+
+        return order;
     }
 
-    private void copy(OrderCreateUpdateDto dto, Order entity) {
+    private void copyFields(OrderCreateUpdateDto dto, Order entity) {
         entity.setUser(findUser(dto.userId()));
-        entity.setStatus(OrderStatus.NEW);
         entity.setAddress(findAddress(dto.addressId()));
-
         Map<Long, Integer> productsMap = dto.productQuantityIdMap();
         List<Product> productLst = findProducts(productsMap.keySet());
         for (var pr : productLst) {
@@ -66,7 +65,6 @@ public class OrderCreateUpdateMapper implements MapperIntrf<OrderCreateUpdateDto
         }
         entity.setOrderCost(orderCostCalculationService.calculate(entity.getOrderProductLst()));
     }
-
 
     private User findUser(Long id) {
         return userRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));

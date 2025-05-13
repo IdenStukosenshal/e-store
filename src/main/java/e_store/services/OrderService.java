@@ -1,8 +1,8 @@
 package e_store.services;
 
+import e_store.database.entity.Order;
 import e_store.dto.in.OrderCreateUpdateDto;
 import e_store.dto.out.OrderReadDto;
-import e_store.mappers.in.OrderCreateUpdateMapper;
 import e_store.mappers.out.OrderReadMapper;
 import e_store.repositories.OrderRepo;
 import jakarta.validation.ValidationException;
@@ -17,14 +17,14 @@ public class OrderService {
 
     private final OrderRepo orderRepo;
     private final OrderReadMapper orderReadMapper;
-    private final OrderCreateUpdateMapper orderCreateUpdateMapper;
+    private final CreateUpdateOrderService createUpdateOrderService;
 
     public OrderService(OrderRepo orderRepo,
                         OrderReadMapper orderReadMapper,
-                        OrderCreateUpdateMapper orderCreateUpdateMapper) {
+                        CreateUpdateOrderService createUpdateOrderService) {
         this.orderRepo = orderRepo;
         this.orderReadMapper = orderReadMapper;
-        this.orderCreateUpdateMapper = orderCreateUpdateMapper;
+        this.createUpdateOrderService = createUpdateOrderService;
     }
 
     @Transactional(readOnly = true)
@@ -36,20 +36,19 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderReadDto findById(Long id) {
-        var entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
+        Order entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
         return orderReadMapper.map(entity);
     }
 
     public OrderReadDto create(OrderCreateUpdateDto dto) {
-        var entity = orderCreateUpdateMapper.map(dto);
-        var savedEntity = orderRepo.save(entity);
+        Order savedEntity = orderRepo.save(createUpdateOrderService.create(dto));
         return orderReadMapper.map(savedEntity);
     }
 
     public OrderReadDto update(Long id, OrderCreateUpdateDto updateDto) {
-        var entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
-        var updatedEntity = orderCreateUpdateMapper.mapUpd(updateDto, entity);
-        var savedEntity = orderRepo.saveAndFlush(updatedEntity);
+        Order entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
+        Order updatedEntity = createUpdateOrderService.update(updateDto, entity);
+        Order savedEntity = orderRepo.saveAndFlush(updatedEntity);
         return orderReadMapper.map(savedEntity);
     }
 
