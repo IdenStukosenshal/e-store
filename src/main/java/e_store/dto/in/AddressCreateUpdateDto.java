@@ -1,6 +1,7 @@
 package e_store.dto.in;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record AddressCreateUpdateDto(
         @NotBlank
@@ -8,7 +9,8 @@ public record AddressCreateUpdateDto(
         @NotBlank
         String postalCode,
         @NotBlank
-        String streetAddress
+        String streetAddress,
+        @NotNull
+        Long userId
 ) {
-
 }

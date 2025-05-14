@@ -2,7 +2,6 @@ package e_store.database.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="user_id")
+    @Column(name = "user_id")
     private Long id;
 
     @NotBlank
@@ -27,15 +26,11 @@ public class User {
     private String email;
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Order> ordersLst = new ArrayList<>();
 
-    /*
-    public void addOrder(Order order){
-        this.ordersLst.add(order);
-        order.setUser(this);
-    }
-     */
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Address> addressLst = new ArrayList<>();
 
 
     public User() {
@@ -45,12 +40,14 @@ public class User {
                 String firstName,
                 String lastName,
                 String email,
-                List<Order> ordersLst) {
+                List<Order> ordersLst,
+                List<Address> addressLst) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.ordersLst = ordersLst;
+        this.addressLst = addressLst;
     }
 
     public Long getId() {
@@ -93,6 +90,13 @@ public class User {
         this.ordersLst = ordersLst;
     }
 
+    public List<Address> getAddressLst() {
+        return addressLst;
+    }
+
+    public void setAddressLst(List<Address> addressLst) {
+        this.addressLst = addressLst;
+    }
 
     @Override
     public boolean equals(Object o) {

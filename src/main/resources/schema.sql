@@ -9,10 +9,14 @@ CONSTRAINT s_user_pk PRIMARY KEY(user_id)
 
 CREATE TABLE IF NOT EXISTS s_address(
 address_id BIGINT NOT NULL AUTO_INCREMENT,
+user_id BIGINT NOT NULL,
 city VARCHAR(250) NOT NULL,
 postal_code VARCHAR(50) NOT NULL,
 street_address VARCHAR(250) NOT NULL UNIQUE,
-CONSTRAINT s_address_pk PRIMARY KEY(address_id)
+CONSTRAINT s_address_pk PRIMARY KEY(address_id),
+
+CONSTRAINT address_user_fk FOREIGN KEY(user_id)
+    REFERENCES s_user (user_id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS s_product(
@@ -38,7 +42,7 @@ address_id BIGINT NOT NULL,
 CONSTRAINT s_order_pk PRIMARY KEY(order_id),
 
 CONSTRAINT order_user_fk FOREIGN KEY(user_id)
-    REFERENCES s_user (user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+    REFERENCES s_user (user_id) ON UPDATE CASCADE ON DELETE RESTRICT,
 CONSTRAINT order_address_fk FOREIGN KEY(address_id)
     REFERENCES s_address (address_id) ON UPDATE CASCADE ON DELETE RESTRICT
 );

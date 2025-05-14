@@ -3,8 +3,6 @@ package e_store.database.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -13,7 +11,7 @@ public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="address_id")
+    @Column(name = "address_id")
     private Long id;
 
     @NotNull
@@ -25,16 +23,10 @@ public class Address {
     @NotNull
     private String streetAddress;
 
-    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY) //когда есть поле в классе можно использовать (mappedBy = "поле")
-    private List<Order> ordersLst = new ArrayList<>();
-
-    /*
-    public void addOrder(Order order){
-        this.ordersLst.add(order);
-        order.setAddress(this);
-    }
-
-     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @NotNull
+    private User user;
 
 
     public Address() {
@@ -44,12 +36,12 @@ public class Address {
                    String city,
                    String postalCode,
                    String streetAddress,
-                   List<Order> ordersLst) {
+                   User user) {
         this.id = id;
         this.city = city;
         this.postalCode = postalCode;
         this.streetAddress = streetAddress;
-        this.ordersLst = ordersLst;
+        this.user = user;
     }
 
     public Long getId() {
@@ -76,20 +68,20 @@ public class Address {
         this.streetAddress = streetAddress;
     }
 
-    public List<Order> getOrdersLst() {
-        return ordersLst;
-    }
-
-    public void setOrdersLst(List<Order> ordersLst) {
-        this.ordersLst = ordersLst;
-    }
-
     public String getPostalCode() {
         return postalCode;
     }
 
     public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

@@ -36,7 +36,7 @@ public class CommonEntityTest {
     }
 
     @Test
-    public void simpleCheck() {
+    public void checkSaveFindEntities() {
         //Arrange
         User userOne = new User();
         userOne.setFirstName("FirstName_1");
@@ -44,11 +44,12 @@ public class CommonEntityTest {
         userOne.setEmail("first@email.com_1");
         userRepo.save(userOne);
 
-        Address address = new Address();
-        address.setCity("CityName_1");
-        address.setPostalCode("post-123");
-        address.setStreetAddress("StreetAddress_1");
-        addressRepo.save(address);
+        Address addressOne = new Address();
+        addressOne.setCity("CityName_1");
+        addressOne.setPostalCode("post-123");
+        addressOne.setStreetAddress("StreetAddress_1");
+        addressOne.setUser(userOne);
+        addressRepo.save(addressOne);
 
         Product productOne = new Product();
         productOne.setName("_1");
@@ -68,7 +69,7 @@ public class CommonEntityTest {
         orderOne.setOrderNumber("4521734");
         orderOne.setStatus(OrderStatus.NEW);
         orderOne.setOrderCost(productsLst.stream().map(Product::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add));
-        orderOne.setAddress(address);
+        orderOne.setAddress(addressOne);
 
         orderOne.addProduct(productOne, 10);
         orderOne.addProduct(productTwo, 20);
@@ -76,11 +77,10 @@ public class CommonEntityTest {
 
         //Act
         Order savedOrder = orderRepo.save(orderOne);
-        Order mb = orderRepo.findById(savedOrder.getId()).orElseGet(Order::new);
+        Order mayBeOrder = orderRepo.findById(savedOrder.getId()).orElseGet(Order::new);
 
         //Assert
-        assertEquals(orderOne, mb);
-        assertEquals(orderOne.getOrderProductLst(), mb.getOrderProductLst());
-
+        assertEquals(orderOne, mayBeOrder); //Equals: Order, Address, User
+        assertEquals(orderOne.getOrderProductLst(), mayBeOrder.getOrderProductLst()); //Equals: OrderProduct, Product
     }
 }

@@ -101,7 +101,6 @@ public class Order {
 
     public void setAddress(Address address) {
         this.address = address;
-        this.address.getOrdersLst().add(this);
     }
 
     public Long getId() {

@@ -20,9 +20,9 @@ public class AddressRestController {
     }
 
 
-    @GetMapping
-    public List<AddressReadDto> findAll() {
-        return addressService.findAll();
+    @GetMapping()
+    public List<AddressReadDto> findAllByUserId(@RequestParam Long userId) {
+        return addressService.findAllByUserId(userId);
     }
 
     @GetMapping("/{id}")

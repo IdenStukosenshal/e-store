@@ -28,9 +28,9 @@ public class AddressService {
     }
 
     @Transactional(readOnly = true)
-    public List<AddressReadDto> findAll() {
+    public List<AddressReadDto> findAllByUserId(Long id) {
         return addressRepo
-                .findAll()
+                .findAllByUserId(id)
                 .stream()
                 .map(addressReadMapper::map)
                 .toList();
