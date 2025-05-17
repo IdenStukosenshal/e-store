@@ -14,4 +14,11 @@ public interface AddressRepo extends JpaRepository<Address, Long> {
              WHERE a.user_id = :userId
             """, nativeQuery = true)
     List<Address> findAllByUserId(Long userId);
+
+    @Query(value = """
+            DELETE
+              FROM s_address a
+             WHERE a.user_id = :userId
+            """, nativeQuery = true)
+    void deleteAllByUserId(Long userId);
 }

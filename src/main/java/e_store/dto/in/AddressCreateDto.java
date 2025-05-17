@@ -1,16 +1,13 @@
 package e_store.dto.in;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
-public record AddressCreateUpdateDto(
+public record AddressCreateDto(
         @NotBlank
         String city,
         @NotBlank
         String postalCode,
         @NotBlank
-        String streetAddress,
-        @NotNull
-        Long userId
+        String streetAddress
 ) {
 }

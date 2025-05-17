@@ -50,7 +50,7 @@ public class ProductService {
     public ProductReadDto update(Long id, ProductCreateUpdateDto updateDto) {
         var entity = productRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
         var updatedEntity = productCreateUpdateMapper.mapUpd(updateDto, entity);
-        var savedEntity = productRepo.saveAndFlush(updatedEntity);
+        var savedEntity = productRepo.save(updatedEntity);
         return productReadMapper.map(savedEntity);
     }
 

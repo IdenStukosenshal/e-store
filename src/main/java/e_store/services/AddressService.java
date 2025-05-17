@@ -1,10 +1,13 @@
 package e_store.services;
 
-import e_store.dto.in.AddressCreateUpdateDto;
+import e_store.database.entity.Address;
+import e_store.database.entity.User;
+import e_store.dto.in.AddressCreateDto;
 import e_store.dto.out.AddressReadDto;
-import e_store.mappers.in.AddressCreateUpdateMapper;
+import e_store.mappers.in.AddressCreateMapper;
 import e_store.mappers.out.AddressReadMapper;
 import e_store.repositories.AddressRepo;
+import e_store.repositories.UserRepo;
 import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +18,19 @@ import java.util.List;
 @Service
 public class AddressService {
 
-    private final AddressCreateUpdateMapper addressCreateUpdateMapper;
+    private final AddressCreateMapper addressCreateMapper;
     private final AddressReadMapper addressReadMapper;
     private final AddressRepo addressRepo;
+    private final UserRepo userRepo;
 
-    public AddressService(AddressCreateUpdateMapper addressCreateUpdateMapper,
+    public AddressService(AddressCreateMapper addressCreateMapper,
                           AddressReadMapper addressReadMapper,
-                          AddressRepo addressRepo) {
-        this.addressCreateUpdateMapper = addressCreateUpdateMapper;
+                          AddressRepo addressRepo,
+                          UserRepo userRepo) {
+        this.addressCreateMapper = addressCreateMapper;
         this.addressReadMapper = addressReadMapper;
         this.addressRepo = addressRepo;
+        this.userRepo = userRepo;
     }
 
     @Transactional(readOnly = true)
@@ -38,20 +44,14 @@ public class AddressService {
 
     @Transactional(readOnly = true)
     public AddressReadDto findById(Long id) {
-        var entity = addressRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
+        Address entity = addressRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
         return addressReadMapper.map(entity);
     }
 
-    public AddressReadDto create(AddressCreateUpdateDto dto) {
-        var entity = addressCreateUpdateMapper.map(dto);
+    public AddressReadDto create(AddressCreateDto dto, Long userId) {
+        Address entity = addressCreateMapper.map(dto);
+        entity.setUser(findUser(userId));
         var savedEntity = addressRepo.save(entity);
-        return addressReadMapper.map(savedEntity);
-    }
-
-    public AddressReadDto update(Long id, AddressCreateUpdateDto updateDto) {
-        var entity = addressRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
-        var updatedEntity = addressCreateUpdateMapper.mapUpd(updateDto, entity);
-        var savedEntity = addressRepo.saveAndFlush(updatedEntity);
         return addressReadMapper.map(savedEntity);
     }
 
@@ -64,7 +64,11 @@ public class AddressService {
         }
     }
 
-    public void deleteAll() {
-        addressRepo.deleteAll();
+    public void deleteAllByUserId(Long userId) {
+        addressRepo.deleteAllByUserId(userId);
+    }
+
+    private User findUser(Long id) {
+        return userRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
     }
 }

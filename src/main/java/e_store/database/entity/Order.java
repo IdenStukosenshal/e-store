@@ -47,7 +47,7 @@ public class Order {
 
     private LocalDateTime deliveryDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "address_id")
     @NotNull
     private Address address;

@@ -48,7 +48,7 @@ public class OrderService {
     public OrderReadDto update(Long id, OrderCreateUpdateDto updateDto) {
         Order entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
         Order updatedEntity = createUpdateOrderService.update(updateDto, entity);
-        Order savedEntity = orderRepo.saveAndFlush(updatedEntity);
+        Order savedEntity = orderRepo.save(updatedEntity);
         return orderReadMapper.map(savedEntity);
     }
 

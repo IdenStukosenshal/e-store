@@ -1,6 +1,6 @@
 package e_store.rest;
 
-import e_store.dto.in.AddressCreateUpdateDto;
+import e_store.dto.in.AddressCreateDto;
 import e_store.dto.out.AddressReadDto;
 import e_store.services.AddressService;
 import jakarta.validation.Valid;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/address")
+@RequestMapping("/api/users/{userid}/address")
 public class AddressRestController {
 
     private final AddressService addressService;
@@ -21,34 +21,29 @@ public class AddressRestController {
 
 
     @GetMapping()
-    public List<AddressReadDto> findAllByUserId(@RequestParam Long userId) {
+    public List<AddressReadDto> findAllByUserId(@PathVariable("userid") Long userId) {
         return addressService.findAllByUserId(userId);
     }
 
     @GetMapping("/{id}")
-    public AddressReadDto findById(@PathVariable("id") Long id) {
-        return addressService.findById(id); //orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public AddressReadDto findById(@PathVariable("id") Long id) { //@PathVariable("userid") Long userId
+        return addressService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) //TODO ???
-    public AddressReadDto create(@Valid @RequestBody AddressCreateUpdateDto dto) {
-        return addressService.create(dto);
-    }
-
-    @PutMapping("/{id}")
-    public AddressReadDto update(@PathVariable("id") Long id, @Valid @RequestBody AddressCreateUpdateDto updateDto) {
-        return addressService.update(id, updateDto);
+    public AddressReadDto create(@PathVariable("userid") Long userId, @Valid @RequestBody AddressCreateDto dto) {
+        return addressService.create(dto, userId);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable("id") Long id) {
+    public void deleteById(@PathVariable("id") Long id) { //@PathVariable("userid") Long userId
         addressService.deleteById(id);
     }
 
-    /*
     @DeleteMapping
-    public void deleteAll() {addressService.deleteAll();}
-     */
+    public void deleteAll(@PathVariable("userid") Long userId) {
+        addressService.deleteAllByUserId(userId);
+    }
 
 }

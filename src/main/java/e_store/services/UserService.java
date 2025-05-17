@@ -50,7 +50,7 @@ public class UserService {
     public UserReadDto update(Long id, UserCreateUpdateDto updateDto) {
         var entity = userRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
         var updatedEntity = userCreateUpdateMapper.mapUpd(updateDto, entity);
-        var savedEntity = userRepo.saveAndFlush(updatedEntity);
+        var savedEntity = userRepo.save(updatedEntity);
         return userReadMapper.map(savedEntity);
     }
 
