@@ -17,7 +17,6 @@ public class OrderProductReadMapper implements MapperIntrf<OrderProduct, OrderPr
     @Override
     public OrderProductReadDto map(OrderProduct obj) {
         return new OrderProductReadDto(
-                obj.getId(),
                 productReadMapper.map(obj.getProduct()),
                 obj.getQuantity());
     }

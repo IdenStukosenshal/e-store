@@ -25,12 +25,8 @@ public class User {
     @NotBlank
     private String email;
 
-
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Order> ordersLst = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Address> addressLst = new ArrayList<>();
 
 
     public User() {
@@ -40,14 +36,12 @@ public class User {
                 String firstName,
                 String lastName,
                 String email,
-                List<Order> ordersLst,
-                List<Address> addressLst) {
+                List<Order> ordersLst) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.ordersLst = ordersLst;
-        this.addressLst = addressLst;
     }
 
     public Long getId() {
@@ -88,14 +82,6 @@ public class User {
 
     public void setOrdersLst(List<Order> ordersLst) {
         this.ordersLst = ordersLst;
-    }
-
-    public List<Address> getAddressLst() {
-        return addressLst;
-    }
-
-    public void setAddressLst(List<Address> addressLst) {
-        this.addressLst = addressLst;
     }
 
     @Override

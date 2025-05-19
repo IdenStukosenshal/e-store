@@ -47,13 +47,13 @@ public class Order {
 
     private LocalDateTime deliveryDate;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "address_id")
     @NotNull
     private Address address;
 
     @NotNull
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderProduct> orderProductLst = new ArrayList<>();
 
     public void addProduct(Product product, Integer quantity) {
@@ -62,10 +62,6 @@ public class Order {
         orderProduct.setQuantity(quantity);
         this.orderProductLst.add(orderProduct);
         orderProduct.setOrder(this);
-    }
-
-    public void removeProduct() {//TODO неплохо было бы реализовать
-
     }
 
 

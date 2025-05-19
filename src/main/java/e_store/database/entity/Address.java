@@ -23,25 +23,17 @@ public class Address {
     @NotNull
     private String streetAddress;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    @NotNull
-    private User user;
-
-
     public Address() {
     }
 
     public Address(Long id,
                    String city,
                    String postalCode,
-                   String streetAddress,
-                   User user) {
+                   String streetAddress) {
         this.id = id;
         this.city = city;
         this.postalCode = postalCode;
         this.streetAddress = streetAddress;
-        this.user = user;
     }
 
     public Long getId() {
@@ -76,24 +68,16 @@ public class Address {
         this.postalCode = postalCode;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Address address = (Address) o;
-        return Objects.equals(getId(), address.getId()) && Objects.equals(getCity(), address.getCity()) && Objects.equals(getPostalCode(), address.getPostalCode()) && Objects.equals(getStreetAddress(), address.getStreetAddress());
+        return Objects.equals(getCity(), address.getCity()) && Objects.equals(getPostalCode(), address.getPostalCode()) && Objects.equals(getStreetAddress(), address.getStreetAddress());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getCity(), getPostalCode(), getStreetAddress());
+        return Objects.hash(getCity(), getPostalCode(), getStreetAddress());
     }
 
     @Override

@@ -3,6 +3,7 @@ package e_store.services;
 import e_store.database.entity.Order;
 import e_store.dto.in.OrderCreateUpdateDto;
 import e_store.dto.out.OrderReadDto;
+import e_store.enums.OrderStatus;
 import e_store.mappers.out.OrderReadMapper;
 import e_store.repositories.OrderRepo;
 import jakarta.validation.ValidationException;
@@ -47,6 +48,10 @@ public class OrderService {
 
     public OrderReadDto update(Long id, OrderCreateUpdateDto updateDto) {
         Order entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
+        //1
+        if (!entity.getStatus().equals(OrderStatus.NEW))
+            throw new ValidationException("Too late, the order is in progress");
+
         Order updatedEntity = createUpdateOrderService.update(updateDto, entity);
         Order savedEntity = orderRepo.save(updatedEntity);
         return orderReadMapper.map(savedEntity);
@@ -65,3 +70,12 @@ public class OrderService {
         orderRepo.deleteAll();
     }
 }
+
+
+/*1 Идея:
+предполагается, что пользователь может изменить заказ пока его статус "NEW".
+После - только отменить.
+А статус меняется в другом месте, например сотрудником магазина вручную.
+
+Одна из альтернатив - запрет изменения заказа, только отмена
+*/

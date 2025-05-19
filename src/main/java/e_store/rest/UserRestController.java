@@ -48,8 +48,4 @@ public class UserRestController {
         userService.deleteById(id);
     }
 
-    /*
-    @DeleteMapping
-    public void deleteAll() {userService.deleteAll();}
-     */
 }

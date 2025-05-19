@@ -9,7 +9,6 @@ import java.util.List;
 @Service
 public class OrderCostCalculationService {
 
-    //TODO пока просто сумма цен товаров, черновой вариант
     public BigDecimal calculate(List<OrderProduct> orderProductLst) {
         BigDecimal summ = BigDecimal.ZERO;
         for (OrderProduct op : orderProductLst) {

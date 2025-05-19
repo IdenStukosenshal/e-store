@@ -10,7 +10,6 @@ public class AddressReadMapper implements MapperIntrf<Address, AddressReadDto> {
     @Override
     public AddressReadDto map(Address obj) {
         return new AddressReadDto(
-                obj.getId(),
                 obj.getCity(),
                 obj.getPostalCode(),
                 obj.getStreetAddress());

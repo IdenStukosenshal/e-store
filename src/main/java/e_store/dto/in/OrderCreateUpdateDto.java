@@ -9,7 +9,7 @@ public record OrderCreateUpdateDto(
         @NotNull
         Long userId,
         @NotNull
-        Long addressId,
+        AddressCreateDto addressCreateDto,
 
         @NotNull
         @Size(min = 1, max = 1000, message = "min 1")

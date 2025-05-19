@@ -48,8 +48,6 @@ public class CommonEntityTest {
         addressOne.setCity("CityName_1");
         addressOne.setPostalCode("post-123");
         addressOne.setStreetAddress("StreetAddress_1");
-        addressOne.setUser(userOne);
-        addressRepo.save(addressOne);
 
         Product productOne = new Product();
         productOne.setName("_1");
