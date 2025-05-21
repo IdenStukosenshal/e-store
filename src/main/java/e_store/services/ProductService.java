@@ -37,7 +37,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductReadDto findById(Long id) {
-        var entity = productRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
+        var entity = productRepo.findById(id).orElseThrow(() -> new ValidationException("Product not found!"));
         return productReadMapper.map(entity);
     }
 
@@ -48,7 +48,7 @@ public class ProductService {
     }
 
     public ProductReadDto update(Long id, ProductCreateUpdateDto updateDto) {
-        var entity = productRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
+        var entity = productRepo.findById(id).orElseThrow(() -> new ValidationException("Product not found!"));
         var updatedEntity = productCreateUpdateMapper.mapUpd(updateDto, entity);
         var savedEntity = productRepo.save(updatedEntity);
         return productReadMapper.map(savedEntity);
@@ -59,12 +59,8 @@ public class ProductService {
             productRepo.deleteById(id);
             productRepo.flush();
         } else {
-            throw new ValidationException("not found, TEXT!1!!");
+            throw new ValidationException("Product not found!");
         }
-    }
-
-    public void deleteAll() {
-        productRepo.deleteAll();
     }
 
 

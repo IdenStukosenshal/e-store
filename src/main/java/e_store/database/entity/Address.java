@@ -18,9 +18,6 @@ public class Address {
     private String city;
 
     @NotNull
-    private String postalCode;
-
-    @NotNull
     private String streetAddress;
 
     public Address() {
@@ -28,11 +25,9 @@ public class Address {
 
     public Address(Long id,
                    String city,
-                   String postalCode,
                    String streetAddress) {
         this.id = id;
         this.city = city;
-        this.postalCode = postalCode;
         this.streetAddress = streetAddress;
     }
 
@@ -60,24 +55,17 @@ public class Address {
         this.streetAddress = streetAddress;
     }
 
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Address address = (Address) o;
-        return Objects.equals(getCity(), address.getCity()) && Objects.equals(getPostalCode(), address.getPostalCode()) && Objects.equals(getStreetAddress(), address.getStreetAddress());
+        return Objects.equals(getCity(), address.getCity()) && Objects.equals(getStreetAddress(), address.getStreetAddress());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getCity(), getPostalCode(), getStreetAddress());
+        return Objects.hash(getCity(), getStreetAddress());
     }
 
     @Override
@@ -85,7 +73,6 @@ public class Address {
         return "Address{" +
                 "id=" + id +
                 ", city='" + city + '\'' +
-                ", postalCode='" + postalCode + '\'' +
                 ", streetAddress='" + streetAddress + '\'' +
                 '}';
     }

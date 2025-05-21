@@ -37,7 +37,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderReadDto findById(Long id) {
-        Order entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
+        Order entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("Order not found!"));
         return orderReadMapper.map(entity);
     }
 
@@ -47,7 +47,7 @@ public class OrderService {
     }
 
     public OrderReadDto update(Long id, OrderCreateUpdateDto updateDto) {
-        Order entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
+        Order entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("Order not found !"));
         //1
         if (!entity.getStatus().equals(OrderStatus.NEW))
             throw new ValidationException("Too late, the order is in progress");
@@ -62,13 +62,11 @@ public class OrderService {
             orderRepo.deleteById(id);
             orderRepo.flush();
         } else {
-            throw new ValidationException("not found, TEXT!1!!");
+            throw new ValidationException("Order not found!");
         }
     }
 
-    public void deleteAll() {
-        orderRepo.deleteAll();
-    }
+
 }
 
 

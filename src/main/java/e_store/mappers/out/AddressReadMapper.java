@@ -11,7 +11,6 @@ public class AddressReadMapper implements MapperIntrf<Address, AddressReadDto> {
     public AddressReadDto map(Address obj) {
         return new AddressReadDto(
                 obj.getCity(),
-                obj.getPostalCode(),
                 obj.getStreetAddress());
     }
 }

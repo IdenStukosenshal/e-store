@@ -49,9 +49,4 @@ public class OrderRestController {
         orderService.deleteById(id);
     }
 
-    /*
-    @DeleteMapping
-    public void deleteAll() {orderService.deleteAll();}
-
-     */
 }

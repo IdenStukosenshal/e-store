@@ -48,8 +48,4 @@ public class ProductRestController {
         productService.deleteById(id);
     }
 
-    /*
-    @DeleteMapping
-    public void deleteAll() {productService.deleteAll();}
-     */
 }

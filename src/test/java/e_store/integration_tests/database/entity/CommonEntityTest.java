@@ -19,17 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 public class CommonEntityTest {
 
-    private final AddressRepo addressRepo;
     private final OrderRepo orderRepo;
     private final ProductRepo productRepo;
     private final UserRepo userRepo;
 
     @Autowired
-    public CommonEntityTest(AddressRepo addressRepo,
-                            OrderRepo orderRepo,
+    public CommonEntityTest(OrderRepo orderRepo,
                             ProductRepo productRepo,
                             UserRepo userRepo) {
-        this.addressRepo = addressRepo;
         this.orderRepo = orderRepo;
         this.productRepo = productRepo;
         this.userRepo = userRepo;
@@ -46,7 +43,6 @@ public class CommonEntityTest {
 
         Address addressOne = new Address();
         addressOne.setCity("CityName_1");
-        addressOne.setPostalCode("post-123");
         addressOne.setStreetAddress("StreetAddress_1");
 
         Product productOne = new Product();

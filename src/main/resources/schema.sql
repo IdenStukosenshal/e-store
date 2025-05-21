@@ -10,7 +10,6 @@ CONSTRAINT s_user_pk PRIMARY KEY(user_id)
 CREATE TABLE IF NOT EXISTS s_address(
 address_id BIGINT NOT NULL AUTO_INCREMENT,
 city VARCHAR(250) NOT NULL,
-postal_code VARCHAR(50) NOT NULL,
 street_address VARCHAR(250) NOT NULL,
 CONSTRAINT s_address_pk PRIMARY KEY(address_id)
 );

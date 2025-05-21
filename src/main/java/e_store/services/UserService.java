@@ -37,7 +37,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserReadDto findById(Long id) {
-        var entity = userRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
+        var entity = userRepo.findById(id).orElseThrow(() -> new ValidationException("User not found!"));
         return userReadMapper.map(entity);
     }
 
@@ -48,7 +48,7 @@ public class UserService {
     }
 
     public UserReadDto update(Long id, UserCreateUpdateDto updateDto) {
-        var entity = userRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
+        var entity = userRepo.findById(id).orElseThrow(() -> new ValidationException("User not found!"));
         var updatedEntity = userCreateUpdateMapper.mapUpd(updateDto, entity);
         var savedEntity = userRepo.save(updatedEntity);
         return userReadMapper.map(savedEntity);
@@ -59,11 +59,8 @@ public class UserService {
             userRepo.deleteById(id);
             userRepo.flush();
         } else {
-            throw new ValidationException("not found, TEXT!1!!");
+            throw new ValidationException("User not found!");
         }
     }
 
-    public void deleteAll() {
-        userRepo.deleteAll();
-    }
 }

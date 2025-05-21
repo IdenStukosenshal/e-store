@@ -12,9 +12,7 @@ public class AddressCreateMapper implements MapperIntrf<AddressCreateDto, Addres
     @Override
     public Address map(AddressCreateDto dto) {
         Address entity = new Address();
-
         entity.setCity(dto.city());
-        entity.setPostalCode(dto.postalCode());
         entity.setStreetAddress(dto.streetAddress());
         return entity;
     }

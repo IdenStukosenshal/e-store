@@ -7,7 +7,6 @@ import e_store.database.entity.User;
 import e_store.dto.in.OrderCreateUpdateDto;
 import e_store.enums.OrderStatus;
 import e_store.mappers.in.AddressCreateMapper;
-import e_store.repositories.AddressRepo;
 import e_store.repositories.ProductRepo;
 import e_store.repositories.UserRepo;
 import jakarta.validation.ValidationException;
@@ -20,21 +19,22 @@ import java.util.Set;
 @Service
 public class CreateUpdateOrderService {
 
+    private final ValidateAddressService validateAddressService;
+
     private final UserRepo userRepo;
-    private final AddressRepo addressRepo;
     private final AddressCreateMapper addressCreateMapper;
     private final ProductRepo productRepo;
     private final OrderCostCalculationService orderCostCalculationService;
     private final GenerateOrderNumberService generateOrderNumberService;
 
-    public CreateUpdateOrderService(UserRepo userRepo,
-                                    AddressRepo addressRepo,
+    public CreateUpdateOrderService(ValidateAddressService validateAddressService,
+                                    UserRepo userRepo,
                                     AddressCreateMapper addressCreateMapper,
                                     ProductRepo productRepo,
                                     OrderCostCalculationService orderCostCalculationService,
                                     GenerateOrderNumberService generateOrderNumberService) {
+        this.validateAddressService = validateAddressService;
         this.userRepo = userRepo;
-        this.addressRepo = addressRepo;
         this.addressCreateMapper = addressCreateMapper;
         this.productRepo = productRepo;
         this.orderCostCalculationService = orderCostCalculationService;
@@ -73,13 +73,12 @@ public class CreateUpdateOrderService {
         order.setOrderCost(orderCostCalculationService.calculate(order.getOrderProductLst()));
     }
 
-    private Address validateAddress(Address incAddress){
-        //TODO validate or throw exception
-        return incAddress;
+    private Address validateAddress(Address incAddress) {
+        return validateAddressService.valid(incAddress);
     }
 
     private User findUser(Long id) {
-        return userRepo.findById(id).orElseThrow(() -> new ValidationException("not found, TEXT!1!!"));
+        return userRepo.findById(id).orElseThrow(() -> new ValidationException("User not found!"));
     }
 
     private List<Product> findProducts(Set<Long> productsIdSet) {
