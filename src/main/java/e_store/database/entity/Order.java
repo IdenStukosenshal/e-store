@@ -73,8 +73,6 @@ public class Order {
                  User user,
                  OrderStatus status,
                  BigDecimal orderCost,
-                 Instant createdAt,
-                 Instant updatedAt,
                  LocalDateTime deliveryDate,
                  Address address,
                  List<OrderProduct> orderProductLst) {
@@ -83,8 +81,6 @@ public class Order {
         this.user = user;
         this.status = status;
         this.orderCost = orderCost;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
         this.deliveryDate = deliveryDate;
         this.address = address;
         this.orderProductLst = orderProductLst;
