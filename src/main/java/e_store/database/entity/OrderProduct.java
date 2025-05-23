@@ -78,7 +78,7 @@ public class OrderProduct {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         OrderProduct that = (OrderProduct) o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getOrder(), that.getOrder()) && Objects.equals(getProduct(), that.getProduct()) && Objects.equals(getQuantity(), that.getQuantity());
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getProduct(), that.getProduct()) && Objects.equals(getQuantity(), that.getQuantity());
     }
 
     @Override

@@ -22,7 +22,7 @@ public class ValidateAddressService {
         this.apiKey = apiKey;
     }
 
-    public Address valid(Address incAddress) {
+    public Address validAndCorrect(Address incAddress) {
         String geocodeRequest = incAddress.getCity() + " " + incAddress.getStreetAddress();
         String json = addressProxy.getGeoData(apiKey, geocodeRequest, "3", "json");
 

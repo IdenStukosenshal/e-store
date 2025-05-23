@@ -2,6 +2,7 @@ package e_store.dto.in;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 import java.util.Map;
@@ -14,6 +15,6 @@ public record OrderCreateUpdateDto(
         AddressCreateDto addressCreateDto,
         @NotNull
         @Size(min = 1, max = 1000, message = "min 1")
-        Map<Long, Integer> productQuantityIdMap
+        Map<Long, @Positive Integer> productQuantityIdMap
 ) {
 }

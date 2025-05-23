@@ -74,12 +74,12 @@ public class Product {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return Objects.equals(getId(), product.getId()) && Objects.equals(getName(), product.getName()) && Objects.equals(getDescription(), product.getDescription()) && Objects.equals(getPrice(), product.getPrice());
+        return Objects.equals(getId(), product.getId()) && Objects.equals(getName(), product.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getDescription(), getPrice());
+        return Objects.hash(getId(), getName());
     }
 
     @Override

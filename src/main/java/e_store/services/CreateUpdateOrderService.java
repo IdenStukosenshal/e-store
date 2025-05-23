@@ -1,6 +1,5 @@
 package e_store.services;
 
-import e_store.database.entity.Address;
 import e_store.database.entity.Order;
 import e_store.database.entity.Product;
 import e_store.database.entity.User;
@@ -62,8 +61,7 @@ public class CreateUpdateOrderService {
 
     private void fillOrderFields(OrderCreateUpdateDto dto, Order order) {
         order.setUser(findUser(dto.userId()));
-
-        order.setAddress(validateAddress(addressCreateMapper.map(dto.addressCreateDto())));
+        order.setAddress(validateAddressService.validAndCorrect(addressCreateMapper.map(dto.addressCreateDto())));
 
         Map<Long, Integer> incProductsIDMap = dto.productQuantityIdMap();
         List<Product> incVerifiedProductLst = findProducts(incProductsIDMap.keySet());
@@ -73,15 +71,13 @@ public class CreateUpdateOrderService {
         order.setOrderCost(orderCostCalculationService.calculate(order.getOrderProductLst()));
     }
 
-    private Address validateAddress(Address incAddress) {
-        return validateAddressService.valid(incAddress);
-    }
-
     private User findUser(Long id) {
         return userRepo.findById(id).orElseThrow(() -> new ValidationException("User not found!"));
     }
 
     private List<Product> findProducts(Set<Long> productsIdSet) {
-        return productRepo.findAllById(productsIdSet);
+        List<Product> productsLst = productRepo.findAllById(productsIdSet);
+        if(productsLst.isEmpty()) throw new ValidationException("Products not found!");
+        return productsLst;
     }
 }
