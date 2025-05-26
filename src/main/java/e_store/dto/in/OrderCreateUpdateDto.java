@@ -15,6 +15,6 @@ public record OrderCreateUpdateDto(
         AddressCreateDto addressCreateDto,
         @NotNull
         @Size(min = 1, max = 1000, message = "min 1")
-        Map<Long, @Positive Integer> productQuantityIdMap
+        Map<Long, @Positive(message = "min 1") Integer> productQuantityIdMap
 ) {
 }

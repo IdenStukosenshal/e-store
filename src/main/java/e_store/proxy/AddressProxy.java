@@ -1,5 +1,6 @@
 package e_store.proxy;
 
+import e_store.dto.in.GeocodeResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -8,5 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface AddressProxy {
 
     @GetMapping()
-    String getGeoData(@RequestParam String apikey, @RequestParam String geocode, @RequestParam String results, @RequestParam String format);
+    GeocodeResponse getGeoData(@RequestParam String apikey,
+                               @RequestParam String geocode,
+                               @RequestParam String results,
+                               @RequestParam String format);
 }

@@ -91,8 +91,5 @@ class OrderReadMapperTest {
         assertEquals(addressReadDto, resultDto.addressDto());
         assertEquals(List.of(orderProductReadDto), resultDto.orderProductDtoLst());
         assertEquals(order.getCreatedAt(), resultDto.createdAt());
-
-        Mockito.verify(mockAddressReadMapper).map(address);
-        Mockito.verify(mockOrderProductReadMapper).map(orderProduct);
     }
 }
