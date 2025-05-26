@@ -3,6 +3,7 @@ package e_store.unit_tests.mappers.out;
 import e_store.database.entity.Address;
 import e_store.dto.out.AddressReadDto;
 import e_store.mappers.out.AddressReadMapper;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,8 +21,11 @@ class AddressReadMapperTest {
 
         AddressReadDto dto = addressReadMapper.map(entity);
 
-        assertEquals(city, dto.city());
-        assertEquals(street, dto.streetAddress());
+        Assertions
+                .assertThat(entity)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(dto);
     }
 
 }

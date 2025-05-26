@@ -23,7 +23,6 @@ class OrderReadMapperTest {
     private OrderProductReadMapper mockOrderProductReadMapper;
     private OrderReadMapper orderReadMapper;
 
-
     @BeforeEach
     void setUp() {
         this.mockAddressReadMapper = Mockito.mock(AddressReadMapper.class);
@@ -88,8 +87,9 @@ class OrderReadMapperTest {
         assertEquals(order.getUser().getId(), resultDto.userId());
         assertEquals(order.getStatus(), resultDto.status());
         assertEquals(order.getOrderCost(), resultDto.orderCost());
+        assertEquals(order.getCreatedAt(), resultDto.createdAt());
+        assertEquals(order.getUpdatedAt(), resultDto.updatedAt());
         assertEquals(addressReadDto, resultDto.addressDto());
         assertEquals(List.of(orderProductReadDto), resultDto.orderProductDtoLst());
-        assertEquals(order.getCreatedAt(), resultDto.createdAt());
     }
 }

@@ -19,4 +19,8 @@ public record OrderReadDto(
         AddressReadDto addressDto,
         List<OrderProductReadDto> orderProductDtoLst
 ) {
+    //For Testing
+    public OrderReadDto(){
+        this(null, null, null, null,null,null,null,null,null,null);
+    }
 }
