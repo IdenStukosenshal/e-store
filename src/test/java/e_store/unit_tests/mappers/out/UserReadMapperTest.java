@@ -6,6 +6,7 @@ import e_store.dto.out.OrderReadDto;
 import e_store.dto.out.UserReadDto;
 import e_store.mappers.out.OrderReadMapper;
 import e_store.mappers.out.UserReadMapper;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -34,7 +35,7 @@ class UserReadMapperTest {
                 "LName",
                 "email@a.com",
                 List.of(order));
-        OrderReadDto orderReadDto = new OrderReadDto();
+        OrderReadDto orderReadDto = Instancio.create(OrderReadDto.class);
         Mockito.when(mockOrderReadMapper.map(order)).thenReturn(orderReadDto);
 
         UserReadDto dto = realUserReadMapper.map(entity);
@@ -46,3 +47,12 @@ class UserReadMapperTest {
         assertEquals(entity.getOrdersLst().size(), dto.ordersDtoLst().size());
     }
 }
+
+/*
+        AddressCreateDto addressDto = Instancio.create(AddressCreateDto.class);
+
+        AddressCreateDto addressDto = Instancio.of(AddressCreateDto.class)
+                .set(field(AddressCreateDto::city), "city")
+                .create();
+
+*/
