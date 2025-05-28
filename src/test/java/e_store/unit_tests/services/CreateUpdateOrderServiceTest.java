@@ -11,6 +11,8 @@ import e_store.services.CreateUpdateOrderService;
 import e_store.services.GenerateOrderNumberService;
 import e_store.services.OrderCostCalculationService;
 import e_store.services.ValidateAddressService;
+import jakarta.validation.ValidationException;
+import org.instancio.Instancio;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,9 +27,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.instancio.Select.field;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreateUpdateOrderServiceTest {
@@ -47,40 +49,28 @@ class CreateUpdateOrderServiceTest {
     @InjectMocks
     private CreateUpdateOrderService realCreateUpdateOrderService;
 
-    /*
-        whenCreatingOrderWithValidDataThenOrderIsCreatedSuccessfully
-    whenCreatingOrderWithNonExistingUserThenExceptionIsThrown
-    whenCreatingOrderWithInvalidAddressThenExceptionIsThrown
-    whenCreatingOrderWithInvalidProductsThenExceptionIsThrown
+    private Set<Long> productsIdSet;
+    private User user;
+    private Address validatedAddress;
+    private OrderCreateUpdateDto orderDto;
+    private List<Product> productsLst;
+    private List<OrderProduct> opList;
 
-    whenUpdatingOrderWithValidDataThenOrderIsUpdatedSuccessfully
-    whenUpdatingOrderWithNewProductMapThenProductListIsCleared
-    whenUpdatingOrderWithEmptyProductMapThenProductListRemainsUnchanged
-
-
-    Mockito.when(mockAddressReadMapper.map(address)).thenReturn(addressReadDto);
-    when(generateOrderNumberService.generate(any(Order.class))).thenReturn("ORD-001");
-    when(orderCostCalculationService.calculate(anyList())).thenReturn(new BigDecimal("25.00"));
-    Mockito.verify(mockAddressReadMapper).map(address);
-
-     */
 
     @BeforeEach
     void setUp() {
-    }
+        long productOneId = 2L;
+        long productTwoId = 3L;
+        int quantityOne = 10;
+        int quantityTwo = 20;
+        productsIdSet = Set.of(productOneId, productTwoId);
 
-    @Test
-    void whenCreatingOrderWithValidDataThenOrderIsCreatedSuccessfully(){
         long userId = 1L;
-        long productOneId = 2L, productTwoId = 3L;
-        int quantityOne = 10, quantityTwo = 20;
-        Set<Long> productsIdSet = Set.of(productOneId, productTwoId);
-
-        User user = new User();
+        user = new User();
         user.setId(userId);
 
         AddressCreateDto addressDto = new AddressCreateDto("City", "Street");
-        Address validatedAddress = new Address(null, "ValidCity", "ValidStreet");
+        validatedAddress = new Address(null, "ValidCity", "ValidStreet");
 
         Product productOne = new Product();
         productOne.setId(productOneId);
@@ -88,7 +78,7 @@ class CreateUpdateOrderServiceTest {
         Product productTwo = new Product();
         productTwo.setId(productTwoId);
         productTwo.setName("productName2");
-        List<Product> productsLst = List.of(productOne, productTwo);
+        productsLst = List.of(productOne, productTwo);
 
         OrderProduct orderProductOne = new OrderProduct();
         orderProductOne.setProduct(productOne);
@@ -96,25 +86,27 @@ class CreateUpdateOrderServiceTest {
         OrderProduct orderProductTwo = new OrderProduct();
         orderProductTwo.setProduct(productTwo);
         orderProductTwo.setQuantity(quantityTwo);
-        List<OrderProduct> opList = List.of(orderProductOne, orderProductTwo);
+        opList = List.of(orderProductOne, orderProductTwo);
 
-        OrderCreateUpdateDto orderDto = new OrderCreateUpdateDto(
+        orderDto = new OrderCreateUpdateDto(
                 userId,
                 addressDto,
                 Map.of(productOneId, quantityOne, productTwoId, quantityTwo)
         );
+    }
 
-        Mockito.when(mockUserRepo.findById(userId)).thenReturn(Optional.of(user));
-        Mockito.when(mockAddressCreateMapper.map(addressDto)).thenReturn(new Address());
-        Mockito.when(mockValidateAddressService.validAndCorrect(any(Address.class))).thenReturn(validatedAddress);
+    @Test
+    void whenCreatingOrderWithValidDataThenOrderIsCreatedSuccessfully() {
+
+        Mockito.when(mockUserRepo.findById(orderDto.userId())).thenReturn(Optional.of(user));
+        Mockito.when(mockValidateAddressService.validAndCorrect(any())).thenReturn(validatedAddress);
         Mockito.when(mockProductRepo.findAllById(productsIdSet)).thenReturn(productsLst);
         Mockito.when(mockOrderCostCalculationService.calculate(anyList())).thenReturn(new BigDecimal("99.99"));
         Mockito.when(mockGenerateOrderNumberService.generate(any(Order.class))).thenReturn("orderNumber");
 
-        //Act
         Order resultOrder = realCreateUpdateOrderService.create(orderDto);
 
-        //Assert
+        assertNull(resultOrder.getId());
         assertEquals("orderNumber", resultOrder.getOrderNumber());
         assertEquals(user, resultOrder.getUser());
         assertEquals(OrderStatus.NEW, resultOrder.getStatus());
@@ -122,4 +114,69 @@ class CreateUpdateOrderServiceTest {
         assertEquals(validatedAddress, resultOrder.getAddress());
         assertEquals(opList, resultOrder.getOrderProductLst());
     }
+
+
+    @Test
+    void whenCreatingOrderWithNonExistingUserThenExceptionIsThrown() {
+
+        Mockito.when(mockUserRepo.findById(anyLong())).thenReturn(Optional.empty());
+
+        ValidationException exception = assertThrows(
+                ValidationException.class,
+                () -> realCreateUpdateOrderService.create(orderDto)
+        );
+        assertEquals("User not found!", exception.getMessage());
+    }
+
+    @Test
+    void whenCreatingOrderWithInvalidAddressThenExceptionIsThrown() {
+
+        Mockito.when(mockUserRepo.findById(anyLong())).thenReturn(Optional.of(new User()));
+        Mockito.when(mockValidateAddressService.validAndCorrect(any())).thenThrow(new ValidationException("Address not found!"));
+
+        ValidationException exception = assertThrows(
+                ValidationException.class,
+                () -> realCreateUpdateOrderService.create(orderDto)
+        );
+        assertEquals("Address not found!", exception.getMessage());
+    }
+
+    @Test
+    void whenCreatingOrderWithInvalidProductsThenExceptionIsThrown() {
+
+        Mockito.when(mockUserRepo.findById(anyLong())).thenReturn(Optional.of(new User()));
+        Mockito.when(mockValidateAddressService.validAndCorrect(any())).thenReturn(new Address());
+        Mockito.when(mockProductRepo.findAllById(anySet())).thenReturn(List.of());
+
+        ValidationException exception = assertThrows(
+                ValidationException.class,
+                () -> realCreateUpdateOrderService.create(orderDto)
+        );
+        assertEquals("Products not found!", exception.getMessage());
+    }
+
+    @Test
+    void whenUpdatingOrderWithValidDataThenOrderIsUpdatedSuccessfully() {
+        Order origEntity = Instancio.of(Order.class)
+                .set(field(Order::getStatus), OrderStatus.NEW)
+                .create();
+
+        Mockito.when(mockUserRepo.findById(orderDto.userId())).thenReturn(Optional.of(user));
+        Mockito.when(mockValidateAddressService.validAndCorrect(any())).thenReturn(validatedAddress);
+        Mockito.when(mockProductRepo.findAllById(productsIdSet)).thenReturn(productsLst);
+        Mockito.when(mockOrderCostCalculationService.calculate(anyList())).thenReturn(new BigDecimal("99.99"));
+
+        Order updatedEntity = realCreateUpdateOrderService.update(orderDto, origEntity);
+
+        assertEquals(origEntity.getId(), updatedEntity.getId());
+        assertEquals(origEntity.getStatus(), updatedEntity.getStatus());
+        assertEquals(origEntity.getOrderNumber(), updatedEntity.getOrderNumber());
+        assertEquals(new BigDecimal("99.99"), updatedEntity.getOrderCost());
+        assertEquals(user, updatedEntity.getUser());
+        assertEquals(validatedAddress, updatedEntity.getAddress());
+        assertEquals(opList, updatedEntity.getOrderProductLst());
+        assertEquals(origEntity.getCreatedAt(), updatedEntity.getCreatedAt());
+    }
 }
+
+//TODO Не забыть потом пересмотреть и может быть сделать рефакторинг этих тестов

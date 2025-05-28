@@ -45,14 +45,13 @@ public class CreateUpdateOrderService {
         order.setStatus(OrderStatus.NEW);
 
         fillOrderFields(dto, order);
+
         order.setOrderNumber(generateOrderNumberService.generate(order));
         return order;
     }
 
     public Order update(OrderCreateUpdateDto dto, Order order) {
-        if (!dto.productQuantityIdMap().isEmpty()) {
-            order.getOrderProductLst().clear();
-        }
+        order.getOrderProductLst().clear();
 
         fillOrderFields(dto, order);
 
@@ -77,7 +76,7 @@ public class CreateUpdateOrderService {
 
     private List<Product> findProducts(Set<Long> productsIdSet) {
         List<Product> productsLst = productRepo.findAllById(productsIdSet);
-        if(productsLst.isEmpty()) throw new ValidationException("Products not found!");
+        if (productsLst.isEmpty()) throw new ValidationException("Products not found!");
         return productsLst;
     }
 }

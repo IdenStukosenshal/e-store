@@ -191,6 +191,7 @@ public class Order {
                 ", updatedAt=" + updatedAt +
                 ", deliveryDate=" + deliveryDate +
                 ", address=" + address +
+                ", orderProductLst=" + orderProductLst +
                 '}';
     }
 }
