@@ -6,7 +6,7 @@ import e_store.dto.out.ProductReadDto;
 import e_store.mappers.in.ProductCreateUpdateMapper;
 import e_store.mappers.out.ProductReadMapper;
 import e_store.repositories.ProductRepo;
-import jakarta.validation.ValidationException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductReadDto findById(Long id) {
-        var entity = productRepo.findById(id).orElseThrow(() -> new ValidationException("Product not found!"));
+        var entity = productRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Product"));
         return productReadMapper.map(entity);
     }
 
@@ -48,7 +48,7 @@ public class ProductService {
     }
 
     public ProductReadDto update(Long id, ProductCreateUpdateDto updateDto) {
-        var entity = productRepo.findById(id).orElseThrow(() -> new ValidationException("Product not found!"));
+        var entity = productRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Product"));
         var updatedEntity = productCreateUpdateMapper.mapUpd(updateDto, entity);
         var savedEntity = productRepo.save(updatedEntity);
         return productReadMapper.map(savedEntity);
@@ -59,7 +59,7 @@ public class ProductService {
             productRepo.deleteById(id);
             productRepo.flush();
         } else {
-            throw new ValidationException("Product not found!");
+            throw new EntityNotFoundException("Product");
         }
     }
 

@@ -8,7 +8,7 @@ import e_store.enums.OrderStatus;
 import e_store.mappers.in.AddressCreateMapper;
 import e_store.repositories.ProductRepo;
 import e_store.repositories.UserRepo;
-import jakarta.validation.ValidationException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -71,12 +71,12 @@ public class CreateUpdateOrderService {
     }
 
     private User findUser(Long id) {
-        return userRepo.findById(id).orElseThrow(() -> new ValidationException("User not found!"));
+        return userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("User"));
     }
 
     private List<Product> findProducts(Set<Long> productsIdSet) {
         List<Product> productsLst = productRepo.findAllById(productsIdSet);
-        if (productsLst.isEmpty()) throw new ValidationException("Products not found!");
+        if (productsLst.isEmpty()) throw new EntityNotFoundException("Products");
         return productsLst;
     }
 }

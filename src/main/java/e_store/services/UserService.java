@@ -6,7 +6,7 @@ import e_store.dto.out.UserReadDto;
 import e_store.mappers.in.UserCreateUpdateMapper;
 import e_store.mappers.out.UserReadMapper;
 import e_store.repositories.UserRepo;
-import jakarta.validation.ValidationException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserReadDto findById(Long id) {
-        var entity = userRepo.findById(id).orElseThrow(() -> new ValidationException("User not found!"));
+        var entity = userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("User"));
         return userReadMapper.map(entity);
     }
 
@@ -48,7 +48,7 @@ public class UserService {
     }
 
     public UserReadDto update(Long id, UserCreateUpdateDto updateDto) {
-        var entity = userRepo.findById(id).orElseThrow(() -> new ValidationException("User not found!"));
+        var entity = userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("User"));
         var updatedEntity = userCreateUpdateMapper.mapUpd(updateDto, entity);
         var savedEntity = userRepo.save(updatedEntity);
         return userReadMapper.map(savedEntity);
@@ -59,7 +59,7 @@ public class UserService {
             userRepo.deleteById(id);
             userRepo.flush();
         } else {
-            throw new ValidationException("User not found!");
+            throw new EntityNotFoundException("User");
         }
     }
 

@@ -6,6 +6,7 @@ import e_store.dto.out.OrderReadDto;
 import e_store.enums.OrderStatus;
 import e_store.mappers.out.OrderReadMapper;
 import e_store.repositories.OrderRepo;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,7 +38,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderReadDto findById(Long id) {
-        Order entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("Order not found!"));
+        Order entity = orderRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Order"));
         return orderReadMapper.map(entity);
     }
 
@@ -47,7 +48,7 @@ public class OrderService {
     }
 
     public OrderReadDto update(Long id, OrderCreateUpdateDto updateDto) {
-        Order entity = orderRepo.findById(id).orElseThrow(() -> new ValidationException("Order not found !"));
+        Order entity = orderRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Order"));
         //1
         if (!entity.getStatus().equals(OrderStatus.NEW))
             throw new ValidationException("Too late, the order is in progress");
@@ -62,7 +63,7 @@ public class OrderService {
             orderRepo.deleteById(id);
             orderRepo.flush();
         } else {
-            throw new ValidationException("Order not found!");
+            throw new EntityNotFoundException("Order");
         }
     }
 

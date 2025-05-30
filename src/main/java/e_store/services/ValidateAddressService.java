@@ -24,12 +24,12 @@ public class ValidateAddressService {
         GeocodeResponse geocodeResponse = addressProxy.getGeoData(apiKey, geocodeRequest, "3", "json");
 
         int found = geocodeResponse.response().geoObjectCollection().metaDataProperty().geocoderResponseMetaData().found();
-        if (found == 0) throw new ValidationException("Address not found!");
+        if (found == 0) throw new ValidationException("Address not found on map!");
         else if (found > 1) throw new ValidationException("More than one address match!");
         else {
             String result = geocodeResponse.response().geoObjectCollection().featureMembers().get(0).geoObject().metaDataProperty().geocoderMetaData().address().formatted();
             String[] resultMassive = result.split(", ");
-            if(resultMassive.length < 3) throw new RuntimeException("Формат данных изменился");
+            if (resultMassive.length < 3) throw new RuntimeException("Формат данных изменился");
             return new Address(null, resultMassive[1], result.substring(resultMassive[0].length() + resultMassive[1].length() + 4));
         }
     }
