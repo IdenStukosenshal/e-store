@@ -3,10 +3,11 @@ package e_store.services;
 
 import e_store.dto.in.ProductCreateUpdateDto;
 import e_store.dto.out.ProductReadDto;
+import e_store.enums.ErrorCode;
+import e_store.exceptions.LocalizedValidationException;
 import e_store.mappers.in.ProductCreateUpdateMapper;
 import e_store.mappers.out.ProductReadMapper;
 import e_store.repositories.ProductRepo;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductReadDto findById(Long id) {
-        var entity = productRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Product"));
+        var entity = productRepo.findById(id).orElseThrow(() -> new LocalizedValidationException(ErrorCode.NOT_FOUND.getMsg(), "Product"));
         return productReadMapper.map(entity);
     }
 
@@ -48,7 +49,7 @@ public class ProductService {
     }
 
     public ProductReadDto update(Long id, ProductCreateUpdateDto updateDto) {
-        var entity = productRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Product"));
+        var entity = productRepo.findById(id).orElseThrow(() -> new LocalizedValidationException(ErrorCode.NOT_FOUND.getMsg(), "Product"));
         var updatedEntity = productCreateUpdateMapper.mapUpd(updateDto, entity);
         var savedEntity = productRepo.save(updatedEntity);
         return productReadMapper.map(savedEntity);
@@ -59,9 +60,7 @@ public class ProductService {
             productRepo.deleteById(id);
             productRepo.flush();
         } else {
-            throw new EntityNotFoundException("Product");
+            throw new LocalizedValidationException(ErrorCode.NOT_FOUND.getMsg(), "Product");
         }
     }
-
-
 }

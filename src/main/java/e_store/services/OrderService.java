@@ -3,11 +3,11 @@ package e_store.services;
 import e_store.database.entity.Order;
 import e_store.dto.in.OrderCreateUpdateDto;
 import e_store.dto.out.OrderReadDto;
+import e_store.enums.ErrorCode;
 import e_store.enums.OrderStatus;
+import e_store.exceptions.LocalizedValidationException;
 import e_store.mappers.out.OrderReadMapper;
 import e_store.repositories.OrderRepo;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ValidationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderReadDto findById(Long id) {
-        Order entity = orderRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Order"));
+        Order entity = orderRepo.findById(id).orElseThrow(() -> new LocalizedValidationException(ErrorCode.NOT_FOUND.getMsg(), "Order"));
         return orderReadMapper.map(entity);
     }
 
@@ -48,10 +48,10 @@ public class OrderService {
     }
 
     public OrderReadDto update(Long id, OrderCreateUpdateDto updateDto) {
-        Order entity = orderRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("Order"));
+        Order entity = orderRepo.findById(id).orElseThrow(() -> new LocalizedValidationException(ErrorCode.NOT_FOUND.getMsg(), "Order"));
         //1
         if (!entity.getStatus().equals(OrderStatus.NEW))
-            throw new ValidationException("Too late, the order is in progress");
+            throw new LocalizedValidationException(ErrorCode.TOO_LATE.getMsg());
 
         Order updatedEntity = createUpdateOrderService.update(updateDto, entity);
         Order savedEntity = orderRepo.save(updatedEntity);
@@ -63,7 +63,7 @@ public class OrderService {
             orderRepo.deleteById(id);
             orderRepo.flush();
         } else {
-            throw new EntityNotFoundException("Order");
+            throw new LocalizedValidationException(ErrorCode.NOT_FOUND.getMsg(), "Order");
         }
     }
 

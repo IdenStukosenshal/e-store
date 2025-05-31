@@ -4,11 +4,12 @@ import e_store.database.entity.Order;
 import e_store.database.entity.Product;
 import e_store.database.entity.User;
 import e_store.dto.in.OrderCreateUpdateDto;
+import e_store.enums.ErrorCode;
 import e_store.enums.OrderStatus;
+import e_store.exceptions.LocalizedValidationException;
 import e_store.mappers.in.AddressCreateMapper;
 import e_store.repositories.ProductRepo;
 import e_store.repositories.UserRepo;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -71,12 +72,12 @@ public class CreateUpdateOrderService {
     }
 
     private User findUser(Long id) {
-        return userRepo.findById(id).orElseThrow(() -> new EntityNotFoundException("User"));
+        return userRepo.findById(id).orElseThrow(() -> new LocalizedValidationException(ErrorCode.NOT_FOUND.getMsg(), "User"));
     }
 
     private List<Product> findProducts(Set<Long> productsIdSet) {
         List<Product> productsLst = productRepo.findAllById(productsIdSet);
-        if (productsLst.isEmpty()) throw new EntityNotFoundException("Products");
+        if (productsLst.isEmpty()) throw new LocalizedValidationException(ErrorCode.NOT_FOUND.getMsg(), "Products");
         return productsLst;
     }
 }
