@@ -6,6 +6,7 @@ public enum ErrorCode {
     ADDRESS_ON_MAP("error.address.onmap"),
     ADDRESS_MORE_THAN_ONE("error.address.more.thanone"),
     VALIDATION_FIELDS("validation.fields.error"),
+    JSON("json.error"),
     INTERNAL("internal.error");
 
     ErrorCode(String msg) {

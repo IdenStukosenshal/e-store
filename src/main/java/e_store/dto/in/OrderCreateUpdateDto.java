@@ -1,5 +1,6 @@
 package e_store.dto.in;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -14,7 +15,14 @@ public record OrderCreateUpdateDto(
         @Valid
         AddressCreateDto addressCreateDto,
         @NotNull
-        @Size(min = 1, max = 1000, message = "min 1")
+        @Size(min = 1, max = 1000)
+        @Schema(example = """
+                        {
+                          "1": 5,
+                          "2": 10
+                        }
+                        """
+        )
         Map<Long, @Positive(message = "min 1") Integer> productQuantityIdMap
 ) {
 }
