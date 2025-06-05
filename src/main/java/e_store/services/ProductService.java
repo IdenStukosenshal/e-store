@@ -1,6 +1,10 @@
 package e_store.services;
 
 
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import e_store.database.entity.QProduct;
+import e_store.dto.filter.ProductFilter;
 import e_store.dto.in.ProductCreateUpdateDto;
 import e_store.dto.out.ProductReadDto;
 import e_store.enums.ErrorCode;
@@ -30,9 +34,10 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProductReadDto> findAll(PageRequest pageRequest) {
+    public Page<ProductReadDto> findAll(ProductFilter productFilter, PageRequest pageRequest) {
+        Predicate predicate = buildPredicate(productFilter);
         return productRepo
-                .findAll(pageRequest)
+                .findAll(predicate, pageRequest)
                 .map(productReadMapper::map);
     }
 
@@ -62,5 +67,21 @@ public class ProductService {
         } else {
             throw new LocalizedValidationException(ErrorCode.NOT_FOUND.getMsg(), "Product");
         }
+    }
+
+    private Predicate buildPredicate(ProductFilter productFilter) {
+
+        var product = QProduct.product;
+        BooleanExpression predicate = product.isNotNull();
+        if (productFilter.name() != null) {
+            predicate = predicate.and(product.name.contains(productFilter.name()));
+        }
+        if (productFilter.minPrice() != null) {
+            predicate = predicate.and(product.price.goe(productFilter.minPrice()));
+        }
+        if (productFilter.maxPrice() != null) {
+            predicate = predicate.and(product.price.loe(productFilter.maxPrice()));
+        }
+        return predicate;
     }
 }
