@@ -2,7 +2,6 @@ package e_store.services;
 
 
 import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import e_store.database.entity.QProduct;
 import e_store.dto.filter.ProductFilter;
 import e_store.dto.in.ProductCreateUpdateDto;
@@ -12,6 +11,7 @@ import e_store.exceptions.LocalizedValidationException;
 import e_store.mappers.in.ProductCreateUpdateMapper;
 import e_store.mappers.out.ProductReadMapper;
 import e_store.repositories.ProductRepo;
+import e_store.utils.QPredicatesBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -70,18 +70,14 @@ public class ProductService {
     }
 
     private Predicate buildPredicate(ProductFilter productFilter) {
+        QProduct product = QProduct.product;
 
-        var product = QProduct.product;
-        BooleanExpression predicate = product.isNotNull();
-        if (productFilter.name() != null) {
-            predicate = predicate.and(product.name.contains(productFilter.name()));
-        }
-        if (productFilter.minPrice() != null) {
-            predicate = predicate.and(product.price.goe(productFilter.minPrice()));
-        }
-        if (productFilter.maxPrice() != null) {
-            predicate = predicate.and(product.price.loe(productFilter.maxPrice()));
-        }
+        Predicate predicate = QPredicatesBuilder.of()
+                .add(productFilter.name(), product.name::containsIgnoreCase)
+                .add(productFilter.minPrice(), product.price::goe)
+                .add(productFilter.maxPrice(), product.price::loe)
+                .buildAnd();
+
         return predicate;
     }
 }
