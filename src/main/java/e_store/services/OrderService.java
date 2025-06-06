@@ -1,6 +1,9 @@
 package e_store.services;
 
+import com.querydsl.core.types.Predicate;
 import e_store.database.entity.Order;
+import e_store.database.entity.QOrder;
+import e_store.dto.filter.OrderFilter;
 import e_store.dto.in.OrderCreateUpdateDto;
 import e_store.dto.out.OrderReadDto;
 import e_store.enums.ErrorCode;
@@ -8,6 +11,7 @@ import e_store.enums.OrderStatus;
 import e_store.exceptions.LocalizedValidationException;
 import e_store.mappers.out.OrderReadMapper;
 import e_store.repositories.OrderRepo;
+import e_store.utils.QPredicatesBuilder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,9 +34,10 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Page<OrderReadDto> findAll(PageRequest pageRequest) {
+    public Page<OrderReadDto> findAll(OrderFilter orderFilter, PageRequest pageRequest) {
+        Predicate predicate = buildPredicate(orderFilter);
         return orderRepo
-                .findAll(pageRequest)
+                .findAll(predicate, pageRequest)
                 .map(orderReadMapper::map);
     }
 
@@ -67,7 +72,15 @@ public class OrderService {
         }
     }
 
+    private Predicate buildPredicate(OrderFilter orderFilter) {
 
+        QOrder order = QOrder.order;
+
+        return QPredicatesBuilder.of()
+                .add(orderFilter.orderNumber(), order.orderNumber::eq)
+                .add(orderFilter.productName(), order.orderProductLst.any().product.name::containsIgnoreCase)
+                .buildAnd();
+    }
 }
 
 

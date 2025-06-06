@@ -12,3 +12,6 @@
 * Docker
 * Git
 * Swagger
+
+Доступ к swagger-ui:
+http://localhost:8080/swagger-ui.html

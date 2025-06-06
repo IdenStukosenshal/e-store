@@ -1,11 +1,13 @@
 package e_store.rest;
 
 
+import e_store.dto.filter.OrderFilter;
 import e_store.dto.in.OrderCreateUpdateDto;
 import e_store.dto.out.OrderReadDto;
 import e_store.dto.out.PageResponseDto;
 import e_store.services.OrderService;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +24,11 @@ public class OrderRestController {
 
     @GetMapping
     public PageResponseDto<OrderReadDto> findAll(
+            @ParameterObject OrderFilter orderFilter,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "5") int size
     ) {
-        Page<OrderReadDto> pagedData = orderService.findAll(PageRequest.of(page, size));
+        Page<OrderReadDto> pagedData = orderService.findAll(orderFilter, PageRequest.of(page, size));
         return PageResponseDto.of(pagedData);
     }
 
