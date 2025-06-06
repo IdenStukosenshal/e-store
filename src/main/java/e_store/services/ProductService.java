@@ -72,12 +72,10 @@ public class ProductService {
     private Predicate buildPredicate(ProductFilter productFilter) {
         QProduct product = QProduct.product;
 
-        Predicate predicate = QPredicatesBuilder.of()
+        return QPredicatesBuilder.of()
                 .add(productFilter.name(), product.name::containsIgnoreCase)
                 .add(productFilter.minPrice(), product.price::goe)
                 .add(productFilter.maxPrice(), product.price::loe)
                 .buildAnd();
-
-        return predicate;
     }
 }

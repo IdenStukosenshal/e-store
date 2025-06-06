@@ -3,7 +3,9 @@ package e_store.unit_tests.services;
 import e_store.database.entity.*;
 import e_store.dto.in.AddressCreateDto;
 import e_store.dto.in.OrderCreateUpdateDto;
+import e_store.enums.ErrorCode;
 import e_store.enums.OrderStatus;
+import e_store.exceptions.LocalizedValidationException;
 import e_store.mappers.in.AddressCreateMapper;
 import e_store.repositories.ProductRepo;
 import e_store.repositories.UserRepo;
@@ -121,11 +123,12 @@ class CreateUpdateOrderServiceTest {
 
         Mockito.when(mockUserRepo.findById(anyLong())).thenReturn(Optional.empty());
 
-        ValidationException exception = assertThrows(
-                ValidationException.class,
+        LocalizedValidationException exception = assertThrows(
+                LocalizedValidationException.class,
                 () -> realCreateUpdateOrderService.create(orderDto)
         );
-        assertEquals("User not found!", exception.getMessage());
+        assertEquals(ErrorCode.NOT_FOUND.getMsg(), exception.getMsgCode());
+        assertEquals("User", exception.getMsgArgs()[0]);
     }
 
     @Test
@@ -148,11 +151,12 @@ class CreateUpdateOrderServiceTest {
         Mockito.when(mockValidateAddressService.validAndCorrect(any())).thenReturn(new Address());
         Mockito.when(mockProductRepo.findAllById(anySet())).thenReturn(List.of());
 
-        ValidationException exception = assertThrows(
-                ValidationException.class,
+        LocalizedValidationException exception = assertThrows(
+                LocalizedValidationException.class,
                 () -> realCreateUpdateOrderService.create(orderDto)
         );
-        assertEquals("Products not found!", exception.getMessage());
+        assertEquals(ErrorCode.NOT_FOUND.getMsg(), exception.getMsgCode());
+        assertEquals("Products", exception.getMsgArgs()[0]);
     }
 
     @Test

@@ -33,14 +33,14 @@ public class ExceptionRestHandler {
                         error -> error.getDefaultMessage()
                 ));
         String errorMsg = messageSource.getMessage(ErrorCode.VALIDATION_FIELDS.getMsg(), null, LocaleContextHolder.getLocale());
-        ErrorMessageDto error = new ErrorMessageDto(errorMsg, excMap);
+        ErrorMessageDto error = new ErrorMessageDto(errorMsg, ErrorCode.VALIDATION_FIELDS.getMsg(), excMap);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     @ExceptionHandler(LocalizedValidationException.class)
     public ResponseEntity<ErrorMessageDto> handleLocalizedValidationException(LocalizedValidationException exc) {
         String errorMsg = messageSource.getMessage(exc.getMsgCode(), exc.getMsgArgs(), LocaleContextHolder.getLocale());
-        ErrorMessageDto error = new ErrorMessageDto(errorMsg, null);
+        ErrorMessageDto error = new ErrorMessageDto(errorMsg, exc.getMsgCode(), null);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -48,7 +48,7 @@ public class ExceptionRestHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorMessageDto> handleJsonParseErrors(HttpMessageNotReadableException exc) {
         String errorMsg = messageSource.getMessage(ErrorCode.JSON.getMsg(), null, LocaleContextHolder.getLocale());
-        ErrorMessageDto error = new ErrorMessageDto(errorMsg, null);
+        ErrorMessageDto error = new ErrorMessageDto(errorMsg, ErrorCode.JSON.getMsg(), null);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -56,7 +56,7 @@ public class ExceptionRestHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessageDto> handleInternalException(Exception excc) {
         String errorMsg = messageSource.getMessage(ErrorCode.INTERNAL.getMsg(), null, LocaleContextHolder.getLocale());
-        ErrorMessageDto error = new ErrorMessageDto(errorMsg, null);
+        ErrorMessageDto error = new ErrorMessageDto(errorMsg, ErrorCode.INTERNAL.getMsg(),null);
 
         System.out.println("INTERNAL ERROR: " + excc.getMessage());
 
