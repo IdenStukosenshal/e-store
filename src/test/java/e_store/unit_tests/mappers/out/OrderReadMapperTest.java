@@ -21,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class OrderReadMapperTest {
     private AddressReadMapper mockAddressReadMapper;
     private OrderProductReadMapper mockOrderProductReadMapper;
-    private OrderReadMapper orderReadMapper;
+    private OrderReadMapper realOrderReadMapper;
 
     @BeforeEach
     void setUp() {
         this.mockAddressReadMapper = Mockito.mock(AddressReadMapper.class);
         this.mockOrderProductReadMapper = Mockito.mock(OrderProductReadMapper.class);
-        this.orderReadMapper = new OrderReadMapper(mockAddressReadMapper, mockOrderProductReadMapper);
+        this.realOrderReadMapper = new OrderReadMapper(mockAddressReadMapper, mockOrderProductReadMapper);
     }
 
     @Test
@@ -79,7 +79,7 @@ class OrderReadMapperTest {
         Mockito.when(mockOrderProductReadMapper.map(orderProduct)).thenReturn(orderProductReadDto);
 
         //Act
-        OrderReadDto resultDto = orderReadMapper.map(order);
+        OrderReadDto resultDto = realOrderReadMapper.map(order);
 
         //Assert
         assertEquals(order.getId(), resultDto.id());
