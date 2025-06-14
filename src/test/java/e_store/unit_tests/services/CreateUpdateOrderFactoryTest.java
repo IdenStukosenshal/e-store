@@ -9,7 +9,7 @@ import e_store.exceptions.LocalizedValidationException;
 import e_store.mappers.in.AddressCreateMapper;
 import e_store.repositories.ProductRepo;
 import e_store.repositories.UserRepo;
-import e_store.services.CreateUpdateOrderService;
+import e_store.services.CreateUpdateOrderFactory;
 import e_store.services.GenerateOrderNumberService;
 import e_store.services.OrderCostCalculationService;
 import e_store.services.ValidateAddressService;
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
-class CreateUpdateOrderServiceTest {
+class CreateUpdateOrderFactoryTest {
     @Mock
     private ValidateAddressService mockValidateAddressService;
     @Mock
@@ -49,7 +49,7 @@ class CreateUpdateOrderServiceTest {
     private GenerateOrderNumberService mockGenerateOrderNumberService;
 
     @InjectMocks
-    private CreateUpdateOrderService realCreateUpdateOrderService;
+    private CreateUpdateOrderFactory realCreateUpdateOrderFactory;
 
     private Set<Long> productsIdSet;
     private User user;
@@ -106,7 +106,7 @@ class CreateUpdateOrderServiceTest {
         Mockito.when(mockOrderCostCalculationService.calculate(anyList())).thenReturn(new BigDecimal("99.99"));
         Mockito.when(mockGenerateOrderNumberService.generate(any(Order.class))).thenReturn("orderNumber");
 
-        Order resultOrder = realCreateUpdateOrderService.create(orderDto);
+        Order resultOrder = realCreateUpdateOrderFactory.create(orderDto);
 
         assertNull(resultOrder.getId());
         assertEquals("orderNumber", resultOrder.getOrderNumber());
@@ -125,7 +125,7 @@ class CreateUpdateOrderServiceTest {
 
         LocalizedValidationException exception = assertThrows(
                 LocalizedValidationException.class,
-                () -> realCreateUpdateOrderService.create(orderDto)
+                () -> realCreateUpdateOrderFactory.create(orderDto)
         );
         assertEquals(ErrorCode.NOT_FOUND.getMsg(), exception.getMsgCode());
         assertEquals("User", exception.getMsgArgs()[0]);
@@ -139,7 +139,7 @@ class CreateUpdateOrderServiceTest {
 
         ValidationException exception = assertThrows(
                 ValidationException.class,
-                () -> realCreateUpdateOrderService.create(orderDto)
+                () -> realCreateUpdateOrderFactory.create(orderDto)
         );
         assertEquals("Address not found!", exception.getMessage());
     }
@@ -153,7 +153,7 @@ class CreateUpdateOrderServiceTest {
 
         LocalizedValidationException exception = assertThrows(
                 LocalizedValidationException.class,
-                () -> realCreateUpdateOrderService.create(orderDto)
+                () -> realCreateUpdateOrderFactory.create(orderDto)
         );
         assertEquals(ErrorCode.NOT_FOUND.getMsg(), exception.getMsgCode());
         assertEquals("Products", exception.getMsgArgs()[0]);
@@ -170,7 +170,7 @@ class CreateUpdateOrderServiceTest {
         Mockito.when(mockProductRepo.findAllById(productsIdSet)).thenReturn(productsLst);
         Mockito.when(mockOrderCostCalculationService.calculate(anyList())).thenReturn(new BigDecimal("99.99"));
 
-        Order updatedEntity = realCreateUpdateOrderService.update(orderDto, origEntity);
+        Order updatedEntity = realCreateUpdateOrderFactory.update(orderDto, origEntity);
 
         assertEquals(origEntity.getId(), updatedEntity.getId());
         assertEquals(origEntity.getStatus(), updatedEntity.getStatus());

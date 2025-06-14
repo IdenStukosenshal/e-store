@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 @Service
-public class CreateUpdateOrderService {
+public class CreateUpdateOrderFactory {
 
     private final ValidateAddressService validateAddressService;
 
@@ -27,7 +27,7 @@ public class CreateUpdateOrderService {
     private final OrderCostCalculationService orderCostCalculationService;
     private final GenerateOrderNumberService generateOrderNumberService;
 
-    public CreateUpdateOrderService(ValidateAddressService validateAddressService,
+    public CreateUpdateOrderFactory(ValidateAddressService validateAddressService,
                                     UserRepo userRepo,
                                     AddressCreateMapper addressCreateMapper,
                                     ProductRepo productRepo,

@@ -23,14 +23,14 @@ public class OrderService {
 
     private final OrderRepo orderRepo;
     private final OrderReadMapper orderReadMapper;
-    private final CreateUpdateOrderService createUpdateOrderService;
+    private final CreateUpdateOrderFactory createUpdateOrderFactory;
 
     public OrderService(OrderRepo orderRepo,
                         OrderReadMapper orderReadMapper,
-                        CreateUpdateOrderService createUpdateOrderService) {
+                        CreateUpdateOrderFactory createUpdateOrderFactory) {
         this.orderRepo = orderRepo;
         this.orderReadMapper = orderReadMapper;
-        this.createUpdateOrderService = createUpdateOrderService;
+        this.createUpdateOrderFactory = createUpdateOrderFactory;
     }
 
     @Transactional(readOnly = true)
@@ -48,7 +48,7 @@ public class OrderService {
     }
 
     public OrderReadDto create(OrderCreateUpdateDto dto) {
-        Order savedEntity = orderRepo.save(createUpdateOrderService.create(dto));
+        Order savedEntity = orderRepo.save(createUpdateOrderFactory.create(dto));
         return orderReadMapper.map(savedEntity);
     }
 
@@ -58,7 +58,7 @@ public class OrderService {
         if (!entity.getStatus().equals(OrderStatus.NEW))
             throw new LocalizedValidationException(ErrorCode.TOO_LATE.getMsg());
 
-        Order updatedEntity = createUpdateOrderService.update(updateDto, entity);
+        Order updatedEntity = createUpdateOrderFactory.update(updateDto, entity);
         Order savedEntity = orderRepo.save(updatedEntity);
         return orderReadMapper.map(savedEntity);
     }
