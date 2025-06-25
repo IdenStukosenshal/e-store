@@ -15,7 +15,7 @@ public class ValidateAddressService {
     private final AddressProxy addressProxy;
 
     public ValidateAddressService(AddressProxy addressProxy,
-                                  @Value("${API_KEY}") String apiKey) {
+                                  @Value("${API_KEY:}") String apiKey) {
         this.addressProxy = addressProxy;
         this.apiKey = apiKey;
     }
